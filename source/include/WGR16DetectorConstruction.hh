@@ -33,6 +33,7 @@
 
 #include "globals.hh"
 #include "G4VUserDetectorConstruction.hh"
+#include "G4MaterialPropertiesTable.hh"
 #include "G4RotationMatrix.hh"
 #include "G4FieldManager.hh"
 #include <string.h>

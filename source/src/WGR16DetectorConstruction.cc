@@ -39,7 +39,7 @@
 #include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4MaterialTable.hh"
-#include "G4MaterialPropertiesTable.hh"
+// #include "G4MaterialPropertiesTable.hh"
 #include "G4NistManager.hh"
 
 #include "G4VSolid.hh"
@@ -109,8 +109,16 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material* cu  = G4Material::GetMaterial("G4_Cu");
 	// const G4double cu_radlen = cu->GetRadlen(); // -- radiation length -- //
 
+	G4double z, a, density, fractionmass;
+	G4int ncomponents, natoms;
+	G4Element* H  = new G4Element("Hydrogen",symbol="H" , z= 1., a= 1.01*g/mole);
+	G4Element* C  = new G4Element("Carbon"  ,symbol="C" , z= 6., a= 12.01*g/mole);
+	G4Element* N  = new G4Element("Nitrogen",symbol="N" , z= 7., a= 14.01*g/mole);
+	G4Element* O  = new G4Element("Oxygen"  ,symbol="O" , z= 8., a= 16.00*g/mole);
+	G4Element* F  = new G4Element("Fluorine",symbol="F" , z= 9., a= 18.9984*g/mole);
+	// G4Element* Si = new G4Element("Silicon" ,symbol="Si", z= 14., a= 28.09*g/mole);/
 
-	// -- for PMT Cathod -- //
+	// -- for PMT Cathod -- //	
 	G4Material* Al 
 	= new G4Material("Aluminium", z=13., a=26.98*g/mole, density=2.700*g/cm3);
 
@@ -304,7 +312,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 				// -- cladding: same shape for both C and S fiber -- //
 				G4VSolid* FiberClad_ith 
-				= G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+				= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
 
 				G4LogicalVolume *FiberClad_Logic_ith
 				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
