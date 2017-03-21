@@ -112,6 +112,9 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4VPhysicalVolume* worldPhysical
 	= new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0, false,0,checkOverlaps);
 
+	//////////////////
+	// -- Cu box -- //
+	//////////////////
 	G4double pi = 3.14159265359;
 	G4double radius = 1.8; // -- unit: m -- //
 	G4double Circumference = 2 * pi * radius;
@@ -129,6 +132,13 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
 	// -- place it -- //
 	new G4PVPlacement( 0, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
+
+	// -- visualization -- //
+	G4VisAttributes* visAttr;
+	visAttr = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+	visAttr->SetVisibility(true);
+	CuLogical->SetVisAttributes(visAttr);
+	fVisAttributes.push_back(visAttr);
 
 	return worldPhysical;
 }
