@@ -174,7 +174,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	// -- Air -- //
 	G4Material* Air 
-	= new G4Material("Air"  , density= 1.290*mg/cm3, ncomponents=2);
+	= new G4Material("Air", density= 1.290*mg/cm3, ncomponents=2);
 	Air->AddElement(N, fractionmass=0.7);
 	Air->AddElement(O, fractionmass=0.3);
 
@@ -563,14 +563,14 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Glas
 
 	//Whenever I add some more detail optical properties, the GEANT4 will take lots of time to calculate
 	//additional optical properties. I use only refractive indices to save time.
-	G4double Glass_AbsLength[nEntries] =
-	{
-	    420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
-	    420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
-	    420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
-	    420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
-	    420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
-	};
+	// G4double Glass_AbsLength[nEntries] =
+	// {
+	//     420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
+	//     420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
+	//     420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
+	//     420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
+	//     420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,420.*cm,
+	// };
 
 	G4MaterialPropertiesTable* mpGlass = new G4MaterialPropertiesTable();
 	mpGlass->AddProperty("RINDEX",PhotonEnergy,RefractiveIndex_Glass,nEntries);
@@ -579,7 +579,7 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Glas
 	return mpGlass;
 }
 
-G4MaterialPropertiesTable* MaterialPropertyTable_Air()
+G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Air()
 {
 	G4double PhotonEnergy[] = {
 	2.00*eV,2.03*eV,2.06*eV,2.09*eV,2.12*eV,
