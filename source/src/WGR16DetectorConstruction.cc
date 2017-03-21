@@ -102,7 +102,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material* vac = G4Material::GetMaterial("G4_Galactic");
 	G4Material* cu  = G4Material::GetMaterial("G4_Cu");
 
-	const G4double cu_radlen = cu->GetRadlen(); // -- radiation length -- //
+	// const G4double cu_radlen = cu->GetRadlen(); // -- radiation length -- //
 
 	// -- world -- //
 	G4VSolid* worldSolid 
