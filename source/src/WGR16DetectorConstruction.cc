@@ -116,11 +116,13 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double pi = 3.14159265359;
+	G4double dPhi = (2*pi) / nTower_PhiDir;
+	G4double half_dPhi = 0.5*dPhi;
+
 	G4double radius = 1.8*m; // -- unit: m -- //
-	G4double Circumference = 2 * pi * radius;
 	// G4double nTower_PhiDir = 283;
 	G4double nTower_PhiDir = 5;
-	G4double CuLen_PhiDir = (Circumference / nTower_PhiDir);
+	G4double CuLen_PhiDir = 2*radius*std::tan(half_dPhi);
 
 	G4double CuLen_EtaDir = CuLen_PhiDir*2.0;
 	G4double CuLen_H = 10*m;
@@ -134,8 +136,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
 
 	// -- default unit for the rotation -- //
-	G4double dPhi = (2*pi) / nTower_PhiDir;
-	G4double half_dPhi = 0.5*dPhi;
+
 	for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 	{
 		G4double phi = i_cu*dPhi;
