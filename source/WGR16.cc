@@ -109,17 +109,17 @@ int main(int argc,char** argv)
     // execute an argument macro file if exist
     G4String command = "/control/execute ";
     G4String fileName = argv[1];
-    UImanager->ApplyCommand(command+fileName);
+    // UImanager->ApplyCommand(command+fileName);
   }
   else {
 #ifdef G4UI_USE
 #ifdef G4VIS_USE
-    UImanager->ApplyCommand("/control/execute init_vis.mac"); 
+    // UImanager->ApplyCommand("/control/execute init_vis.mac"); 
 #else
-    UImanager->ApplyCommand("/control/execute init.mac"); 
+    // UImanager->ApplyCommand("/control/execute init.mac"); 
 #endif
     if (ui->IsGUI()) {
-         UImanager->ApplyCommand("/control/execute gui.mac");
+         // UImanager->ApplyCommand("/control/execute gui.mac");
     }     
     // start interactive session
     ui->SessionStart();
