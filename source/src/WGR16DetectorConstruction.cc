@@ -116,11 +116,11 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double pi = 3.14159265359;
-	G4double radius = 1.8; // -- unit: m -- //
+	G4double radius = 1.8*m; // -- unit: m -- //
 	G4double Circumference = 2 * pi * radius;
 	// G4double nTower_PhiDir = 283;
-	G4double nTower_PhiDir = 4;
-	G4double CuLen_PhiDir = (Circumference / nTower_PhiDir)*m;
+	G4double nTower_PhiDir = 5;
+	G4double CuLen_PhiDir = (Circumference / nTower_PhiDir);
 
 	G4double CuLen_EtaDir = CuLen_PhiDir*2.0;
 	G4double CuLen_H = 2.5*m;
