@@ -131,7 +131,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	G4Box* CuBox 
 	// = new G4Box("CuBox", CuLen_H/2.0, CuLen_PhiDir/2., CuLen_EtaDir/2.0);
-	= new G4Box("CuBox", CuLen_PhiDir/2.0, CuLen_EtaDir/2., CuLen_H/2.0);
+	// = new G4Box("CuBox", CuLen_PhiDir/2.0, CuLen_EtaDir/2., CuLen_H/2.0);
+	= new G4Box("CuBox", CuLen_EtaDir/2.0, CuLen_PhiDir/2., CuLen_H/2.0);
 	G4LogicalVolume *CuLogical
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
 
