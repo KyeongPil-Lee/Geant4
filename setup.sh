@@ -7,9 +7,9 @@ fi
 
 export KP_ANALYZER_PATH=$(pwd)
 
-if [ $HOSTNAME == "charm" ]; then # -- 147.47.242.67 -- # 
+if [ $HOSTNAME == "charm" ]; then 
 	scl enable devtoolset-2 bash # -- enable gcc 4.8 -- #
-	. /usr/local/Geant4/bin/geant4.sh
+	source /usr/local/Geant4/bin/geant4.sh
 fi
 
 echo "================ environment ================"

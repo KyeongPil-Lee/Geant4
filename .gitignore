@@ -1,5 +1,6 @@
 # Build directories
 Build/
+build/
 
 # Plots, Big files...
 Local/
