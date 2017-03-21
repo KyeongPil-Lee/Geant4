@@ -1,0 +1,17 @@
+#This macro can not be executed standalone
+
+#Block 1 Collimator radius 2.5(dia 5.0)
+#/WGR16/detector/B1CollimatorInnerRadius 2.5
+#/run/beamOn 100000
+
+#Block 1 Collimator radius 5(dia 10.0)
+#/WGR16/detector/B1CollimatorInnerRadius 5
+#/run/beamOn 100000
+
+#Block 1 Collimator radius 10(dia 20.0)
+#/WGR16/detector/B1CollimatorInnerRadius 10
+#/run/beamOn 100000
+
+#Block 1 Collimator radius 15(dia 30.0)
+/WGR16/detector/B1CollimatorInnerRadius 15
+/run/beamOn 1000000
