@@ -141,7 +141,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuTrdLen_H = CuLen_H*std::cos(half_dPhi);
 	G4Trd *CuTrd
 	= new G4Trd("CuTrd", CuTriLen_EtaDir/2.0, CuTriLen_EtaDir/2.0, 0, CuTriLen_PhiDir/2.0, CuTrdLen_H/2.0);
-	G4LogicalVolume *CuTriLogical
+	G4LogicalVolume *CuTrdLogical
 	= new G4LogicalVolume(CuTrd, cu, "CuTrdLogical");
 
 	// -- default unit for the rotation -- //
