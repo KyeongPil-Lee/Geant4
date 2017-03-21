@@ -286,7 +286,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		core_S_rMax = clad_C_rMin;
 		core_S_rMin = 0.*mm;
 	}
-	G4double 
+	
 	const G4int nFiber_PhiDir = floor( CuLen_PhiDir / dist_btwCore ) - 1;
 	const G4int nFiber_EtaDir = floor( CuLen_EtaDir / dist_btwCore ) - 1;
 	G4double dist_edge_PhiDir = ( CuLen_PhiDir - (nFiber_PhiDir-1)*dist_btwCore ) / 2.0;
