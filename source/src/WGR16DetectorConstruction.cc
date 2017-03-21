@@ -128,7 +128,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_EtaDir = CuLen_PhiDir*2.0;
 	G4double CuLen_H = 2.5*m;
 
-	G4cout << "[Cu] (PhiDir, EtaDir, Height (unit:m)) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
+	cout << "[Cu] (PhiDir, EtaDir, Height (unit:m)) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << endl;
 
 	G4Box* CuBox 
 	// = new G4Box("CuBox", CuLen_H/2.0, CuLen_PhiDir/2., CuLen_EtaDir/2.0);
