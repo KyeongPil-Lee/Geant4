@@ -128,7 +128,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4cout << "[Cu] (PhiDir, EtaDir, Height (unit:m)) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
 
 	G4Box* CuBox 
-	= new G4Box("CuBox", CuLen_H/2.0, CuLen_PhiDir/2., CuLen_EtaDir/2.0);
+	// = new G4Box("CuBox", CuLen_H/2.0, CuLen_PhiDir/2., CuLen_EtaDir/2.0);
+	= new G4Box("CuBox", CuLen_PhiDir/2.0, CuLen_EtaDir/2., CuLen_H/2.0);
 	G4LogicalVolume *CuLogical
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
 
@@ -143,7 +144,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		rotM.rotateZ(phi);
 
 		G4ThreeVector Unit_Z = G4ThreeVector(std::cos(phi),  std::sin(phi),0.);
-		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- radius = size of the vector -- //
+		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D transform = G4Transform3D(rotM,position);
 
 		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
