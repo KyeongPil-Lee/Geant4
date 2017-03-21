@@ -1,0 +1,291 @@
+//
+// ********************************************************************
+// * License and Disclaimer                                           *
+// *                                                                  *
+// * The  Geant4 software  is  copyright of the Copyright Holders  of *
+// * the Geant4 Collaboration.  It is provided  under  the terms  and *
+// * conditions of the Geant4 Software License,  included in the file *
+// * LICENSE and available at  http://cern.ch/geant4/license .  These *
+// * include a list of copyright holders.                             *
+// *                                                                  *
+// * Neither the authors of this software system, nor their employing *
+// * institutes,nor the agencies providing financial support for this *
+// * work  make  any representation or  warranty, express or implied, *
+// * regarding  this  software system or assume any liability for its *
+// * use.  Please see the license in the file  LICENSE  and URL above *
+// * for the full disclaimer and the limitation of liability.         *
+// *                                                                  *
+// * This  code  implementation is the result of  the  scientific and *
+// * technical work of the GEANT4 collaboration.                      *
+// * By using,  copying,  modifying or  distributing the software (or *
+// * any work based  on the software)  you  agree  to acknowledge its *
+// * use  in  resulting  scientific  publications,  and indicate your *
+// * acceptance of all terms of the Geant4 Software license.          *
+// ********************************************************************
+//
+// $Id: WGR16DetectorConstruction.cc 77656 2013-11-27 08:52:57Z gcosmo $
+//
+/// \file WGR16DetectorConstruction.cc
+/// \brief Implementation of the WGR16DetectorConstruction class
+
+#include "WGR16DetectorConstruction.hh"
+#include "WGR16TowerParameterisation.hh"
+#include "WGR16MagneticField.hh"
+
+#include "G4FieldManager.hh"
+#include "G4TransportationManager.hh"
+#include "G4Mag_UsualEqRhs.hh"
+#include "G4AutoDelete.hh"
+
+#include "G4Material.hh"
+#include "G4Element.hh"
+#include "G4MaterialTable.hh"
+#include "G4NistManager.hh"
+
+#include "G4VSolid.hh"
+#include "G4Box.hh"
+#include "G4Sphere.hh"
+#include "G4Tubs.hh"
+#include "G4Trd.hh"
+#include "G4LogicalVolume.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4PVPlacement.hh"
+#include "G4VPhysicalVolume.hh"
+#include "G4UserLimits.hh"
+
+#include "G4SDManager.hh"
+#include "G4VSensitiveDetector.hh"
+#include "G4RunManager.hh"
+#include "G4GenericMessenger.hh"
+#include "G4VisExtent.hh"
+
+#include "G4VisAttributes.hh"
+#include "G4Colour.hh"
+
+#include "G4ios.hh"
+#include "G4SystemOfUnits.hh"
+
+
+#define SQU(A) ((A)*(A))
+#define MAX(A,B) ((A<=B)?(B):(A))
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4ThreadLocal WGR16MagneticField* WGR16DetectorConstruction::fB1MagneticField = 0;
+G4ThreadLocal WGR16MagneticField* WGR16DetectorConstruction::fB1B2MagneticField = 0;
+G4ThreadLocal WGR16MagneticField* WGR16DetectorConstruction::fB2MagneticField = 0;
+G4ThreadLocal G4FieldManager* WGR16DetectorConstruction::fB1FieldMgr = 0;
+G4ThreadLocal G4FieldManager* WGR16DetectorConstruction::fB1B2FieldMgr = 0;
+G4ThreadLocal G4FieldManager* WGR16DetectorConstruction::fB2FieldMgr = 0;
+    
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+WGR16DetectorConstruction::WGR16DetectorConstruction()
+: G4VUserDetectorConstruction(), 
+  fMessenger(0),innerR(0),inner2outer(0),outerR(0),innerSide(0),outerSide(0),
+	unitTowerLogical(0),
+	unitTowerTrd(0),
+	unitTowerPhys(0),
+  fVisAttributes(),fScoringVolume(0)
+{
+    // define commands for this class
+    DefineCommands();
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+WGR16DetectorConstruction::~WGR16DetectorConstruction()
+{
+    delete fMessenger;
+    
+    for (G4int i=0; i<G4int(fVisAttributes.size()); ++i) 
+    {
+      delete fVisAttributes[i];
+    }  
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
+{
+    // Construct materials
+   
+	G4bool checkOverlaps = true;
+
+	ConstructMaterials();
+    G4Material* air = G4Material::GetMaterial("G4_AIR");
+    G4Material* vac = G4Material::GetMaterial("G4_Galactic");
+	 G4Material* cu  = G4Material::GetMaterial("G4_Cu");
+
+    // experimental hall (world volume)
+    
+	 G4VSolid* worldSolid 
+      = new G4Box("worldBox",7.*m,7.*m,7.*m);
+    G4LogicalVolume* worldLogical
+      = new G4LogicalVolume(worldSolid,vac,"worldLogical");
+    G4VPhysicalVolume* worldPhysical
+      = new G4PVPlacement(0,G4ThreeVector(),worldLogical,"worldPhysical",0,
+                          false,0,checkOverlaps);
+
+	 G4double Rotangle = 90*deg;
+	 G4RotationMatrix* RotMatrix = new G4RotationMatrix();
+	 RotMatrix->rotateY(-Rotangle);
+	 //tower volume
+	
+	 innerR = 1.8*m;
+	 inner2outer = 2.5*m;
+	 outerR = innerR + inner2outer;
+	 innerSide = 40*mm;
+	 outerSide = innerSide*outerR/innerR;
+
+
+	 G4int NbOfTowers = 2;
+
+	 unitTowerTrd = new G4Trd("unitTower",innerSide/2.,outerSide/2.,innerSide/2.,outerSide/2.,inner2outer/2.);
+	 unitTowerLogical = new G4LogicalVolume(unitTowerTrd,cu,"unitTowerLogical");
+//	 unitTowerPhys = new G4PVPlacement(RotMatrix,G4ThreeVector((innerR+outerR)/2.,0,0),unitTowerLogical,"unitTowerLogical",worldLogical,false,0,checkOverlaps);
+	
+	 G4double firstPosition = 0.1*m;
+	 G4double TowerSpacing = 0.5*m;
+	 G4VPVParameterisation* unitTowerParam =
+		 new WGR16TowerParameterisation(NbOfTowers,firstPosition,TowerSpacing);
+
+	G4PVParameterised *unitTowerParameterised = new G4PVParameterised("unitTower",unitTowerLogical,worldLogical,kZAxis,NbOfTowers,unitTowerParam,checkOverlaps);
+
+
+
+	 // Visualization Attributes
+	 G4VisAttributes* visAttr = new G4VisAttributes(G4Colour(1.0,0.0,0.0,0.5));
+	 //visAttr->SetForceSolid(true);
+	 visAttr->SetVisibility(true);
+	 unitTowerLogical->SetVisAttributes(visAttr);
+	 fVisAttributes.push_back(visAttr);
+/*
+	 visAttr = new G4VisAttributes(G4Colour(1.0,1.0,1.0));
+	 visAttr->SetVisibility(false);
+	 Block1Logical->SetVisAttributes(visAttr);
+
+	 fVisAttributes.push_back(visAttr);
+*/
+	 //fScoringVolume = worldLogical;// for Stepping action
+
+    return worldPhysical;
+
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void WGR16DetectorConstruction::ConstructSDandField()
+{
+    // sensitive detectors -----------------------------------------------------
+    G4SDManager* SDman = G4SDManager::GetSDMpointer();
+    G4String SDname;
+
+	 /*G4VSensitiveDetector* B1MRegionSD = new WGR16B1MRegionSD(SDname="/B1magneticdet");
+
+	 SDman->AddNewDetector(B1MRegionSD);
+	 B1MRegionLogical->SetSensitiveDetector(B1MRegionSD);*/
+    // magnetic field ----------------------------------------------------------
+
+/*    fB1B2MagneticField = new WGR16MagneticField(2);
+    fB1B2FieldMgr = new G4FieldManager();
+    fB1B2FieldMgr->SetDetectorField(fB1B2MagneticField);
+    fB1B2FieldMgr->CreateChordFinder(fB1B2MagneticField);
+
+    fB2MagneticField = new WGR16MagneticField(3);
+    fB2FieldMgr = new G4FieldManager();
+    fB2FieldMgr->SetDetectorField(fB2MagneticField);
+    fB2FieldMgr->CreateChordFinder(fB2MagneticField);*/
+    G4bool forceToAllDaughters = true;
+
+ //   B1MRegionLogical->SetFieldManager(fB1FieldMgr, forceToAllDaughters);
+///    B1B2MRegionLogical->SetFieldManager(fB1B2FieldMgr, forceToAllDaughters);
+///    B2MRegionLogical->SetFieldManager(fB2FieldMgr, forceToAllDaughters);
+
+    // Register the field and its manager for deleting
+  /*  G4AutoDelete::Register(fB1MagneticField);
+    G4AutoDelete::Register(fB1FieldMgr);
+    G4AutoDelete::Register(fB1B2MagneticField);
+    G4AutoDelete::Register(fB1B2FieldMgr);
+    G4AutoDelete::Register(fB2MagneticField);
+    G4AutoDelete::Register(fB2FieldMgr);*/
+}    
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void WGR16DetectorConstruction::ConstructMaterials()
+{
+    G4NistManager* nistManager = G4NistManager::Instance();
+
+    // Air 
+    nistManager->FindOrBuildMaterial("G4_AIR");
+  
+    // Argon gas
+    // With a density different from the one defined in NIST
+    // G4double density = 1.782e-03*g/cm3; 
+    // nistManager->BuildMaterialWithNewDensity("WGR16_Ar","G4_Ar",density);
+    // !! cases segmentation fault
+
+    // Scintillator
+    // (PolyVinylToluene, C_9H_10)
+    
+    // CsI
+ 
+	 nistManager->FindOrBuildMaterial("G4_Cu");
+    
+    // Vacuum "Galactic"
+    nistManager->FindOrBuildMaterial("G4_Galactic");
+
+    // Vacuum "Air with low density"
+    // G4Material* air = G4Material::GetMaterial("G4_AIR");
+    // G4double density = 1.0e-5*air->GetDensity();
+    // nistManager
+    //   ->BuildMaterialWithNewDensity("Air_lowDensity", "G4_AIR", density);
+
+    G4cout << G4endl << "The materials defined are : " << G4endl << G4endl;
+    G4cout << *(G4Material::GetMaterialTable()) << G4endl;
+
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//
+//
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void WGR16DetectorConstruction::DefineCommands()
+{
+    // Define /WGR16/detector command directory using generic messenger class
+/*    fMessenger = new G4GenericMessenger(this, 
+                                        "/WGR16/detector/", 
+                                        "Detector control");
+
+    G4GenericMessenger::Command& B2ECollAngleCmd
+      = fMessenger->DeclareMethodWithUnit("Block2Angle","deg",
+          &WGR16DetectorConstruction::SetBlock2Angle,
+          "Set rotation angle of exit collimator and corresponding detector");
+    B2ECollAngleCmd.SetParameterName("angle",true);
+    B2ECollAngleCmd.SetRange("angle>=-90. && angle<=90");
+    B2ECollAngleCmd.SetDefaultValue("60.");
+
+    G4GenericMessenger::Command& B2ECollIRCmd
+      = fMessenger->DeclareMethodWithUnit("B2CollimatorInnerRadius","mm",
+          &WGR16DetectorConstruction::SetB2CollinnerR,
+          "Set inner radius of exit collimator and corresponding detector");
+    B2ECollIRCmd.SetParameterName("radius",true);
+    B2ECollIRCmd.SetRange("radius>0. && radius<=100.");
+    B2ECollIRCmd.SetDefaultValue("5");
+
+    G4GenericMessenger::Command& B1CollIRCmd
+      = fMessenger->DeclareMethodWithUnit("B1CollimatorInnerRadius","mm",
+          &WGR16DetectorConstruction::SetB1CollinnerR,
+          "Set inner radius of block 1 collimator and corresponding geometries");
+    B1CollIRCmd.SetParameterName("radius",true);
+    B1CollIRCmd.SetRange("radius>0. && radius<=100.");
+    B1CollIRCmd.SetDefaultValue("5");
+	 */
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

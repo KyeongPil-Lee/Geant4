@@ -1,0 +1,37 @@
+# Macro file for example WGR16
+# 
+# To be run preferably in batch, without graphics:
+# % exampleWGR16 run2.mac
+#
+#/run/numberOfWorkers 4
+/run/initialize
+#
+#  turn off randomization 
+#
+/WGR16/generator/randomizePrimary FALSE
+/WGR16/generator/sigmaMomentum 0. 
+/WGR16/generator/sigmaAngle 0.
+/run/verbose 1
+/run/printProgress 0
+#
+/WGR16/detector/armAngle 30. deg
+/gun/particle proton
+/WGR16/generator/momentum 100. GeV
+/WGR16/field/value 100. tesla
+/analysis/setFileName WGR16_proton
+/run/beamOn 30
+#
+/WGR16/detector/armAngle 60. deg
+/gun/particle pi+
+/WGR16/generator/momentum 100. GeV
+/WGR16/field/value 200. tesla
+/analysis/setFileName WGR16_pi+
+/run/beamOn 30
+#
+/gun/particle e+
+/WGR16/detector/armAngle 30. deg
+/WGR16/generator/momentum 100. GeV
+/WGR16/field/value 100. tesla
+/analysis/setFileName WGR16_e+
+/run/beamOn 30
+

@@ -1,0 +1,35 @@
+# Macro for full simulation
+# A unit of all length constants is mm.
+/run/numberOfThreads 30
+/run/initialize
+
+/WGR16/B1field/value 1   # Block1, 2 Magnetic Field : 1 tesla
+/WGR16/B1B2field/value 1
+/WGR16/B2field/value 0.5
+
+#/WGR16/detector/B2CollimatorInnerRadius 2.5
+#/control/execute real.mac
+
+#/WGR16/detector/B2CollimatorInnerRadius 5
+#/control/execute real.mac
+
+#/WGR16/detector/B2CollimatorInnerRadius 7.5
+#/control/execute real.mac
+
+#/WGR16/detector/B2CollimatorInnerRadius 10
+#/control/execute real.mac
+
+#/WGR16/detector/B2CollimatorInnerRadius 12.5
+#/control/execute real.mac
+
+/WGR16/detector/Block2Angle -0  # For positron
+/WGR16/detector/B2CollimatorInnerRadius 2.5
+/control/execute real.mac
+
+/WGR16/detector/Block2Angle -30  # For positron
+/WGR16/detector/B2CollimatorInnerRadius 2.5
+/control/execute real.mac
+
+/WGR16/detector/Block2Angle -60  # For positron
+/WGR16/detector/B2CollimatorInnerRadius 2.5
+/control/execute real.mac
