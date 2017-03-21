@@ -269,8 +269,24 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double core_S_Sphi = 0.;
 	G4double core_S_Dphi = 2.*M_PI;
 
-	// G4double dist_btwCore = 1.5*mm;
-	G4double dist_btwCore = 380*mm;
+	G4double dist_btwCore = 1.5*mm;
+
+	bool Do_test = true;
+	if( Do_test )
+	{
+		if( nTower_PhiDir != 10 )
+			cout << "This test setting may not work for this # tower = " << nTower_PhiDir << endl;
+		dist_btwCore = 380*mm; // -- when # tower = 10 -- //
+		clad_C_rMax = 0.50*mm;
+		clad_C_rMin = clad_C_rMax * 0.98;
+
+		core_C_rMax = clad_C_rMin;
+		core_C_rMin = 0.*mm;
+
+		core_S_rMax = clad_C_rMin;
+		core_S_rMin = 0.*mm;
+	}
+	G4double 
 	const G4int nFiber_PhiDir = floor( CuLen_PhiDir / dist_btwCore ) - 1;
 	const G4int nFiber_EtaDir = floor( CuLen_EtaDir / dist_btwCore ) - 1;
 	G4double dist_edge_PhiDir = ( CuLen_PhiDir - (nFiber_PhiDir-1)*dist_btwCore ) / 2.0;
