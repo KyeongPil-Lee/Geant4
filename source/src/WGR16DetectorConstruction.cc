@@ -43,6 +43,7 @@
 
 #include "G4VSolid.hh"
 #include "G4Box.hh"
+#include "G4Trd.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
