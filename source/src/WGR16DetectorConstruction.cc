@@ -276,7 +276,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	{
 		if( nTower_PhiDir != 10 )
 			cout << "This test setting may not work for this # tower = " << nTower_PhiDir << endl;
-		dist_btwCore = 380*mm; // -- when # tower = 10 -- //
+		dist_btwCore = 250*mm; // -- when # tower = 10 -- //
 		clad_C_rMax = dist_btwCore / 3.0;
 		clad_C_rMin = clad_C_rMax * 0.98;
 
@@ -362,6 +362,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 					visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
 				else
 					visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
+				visAttr->SetForceSolid();
 				visAttr->SetVisibility(true);
 				FiberCore_Logic_ith->SetVisAttributes(visAttr);
 			}
