@@ -47,37 +47,51 @@ class G4VisAttributes;
 class G4GenericMessenger;
 class G4VPhysicalVolume;
 
-
 /// Detector construction
 
 class WGR16DetectorConstruction : public G4VUserDetectorConstruction
 {
 public:
-    WGR16DetectorConstruction();
-    virtual ~WGR16DetectorConstruction();
-    
-    virtual G4VPhysicalVolume* Construct();
-    virtual void ConstructSDandField();
+	WGR16DetectorConstruction();
+	virtual ~WGR16DetectorConstruction();
+	
+	virtual G4VPhysicalVolume* Construct();
+	virtual void ConstructSDandField();
 
-    void ConstructMaterials();
+	void ConstructMaterials();
+	G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
 
-	 G4LogicalVolume* GetScoringVolume() const { return fScoringVolume; }
+	G4MaterialPropertiesTable* MaterialPropertyTable_PMMA();
+	G4MaterialPropertiesTable* MaterialPropertyTable_FS();
+	G4MaterialPropertiesTable* MaterialPropertyTable_Glass();
+	G4MaterialPropertiesTable* MaterialPropertyTable_Air();
+
+	bool IsFiberC(G4int i_EtaDir, G4int i_PhiDir);
 
 private:
-    void DefineCommands();
+	void DefineCommands();
 
-    G4GenericMessenger* fMessenger;
-    
-    static G4ThreadLocal WGR16MagneticField* fMagneticField;
-	 static G4ThreadLocal G4FieldManager* fFieldMgr;
+	G4GenericMessenger* fMessenger;
 	
-	
-	 std::vector<G4VisAttributes*> fVisAttributes;
+	static G4ThreadLocal WGR16MagneticField* fMagneticField;
+	static G4ThreadLocal G4FieldManager* fFieldMgr;
+	std::vector<G4VisAttributes*> fVisAttributes;
+
+	// const G4int nEntries = 50;
+	// G4double PhotonEnergy[nEntries] = {
+	// 2.00*eV,2.03*eV,2.06*eV,2.09*eV,2.12*eV,
+	// 2.15*eV,2.18*eV,2.21*eV,2.24*eV,2.27*eV,
+	// 2.30*eV,2.33*eV,2.36*eV,2.39*eV,2.42*eV,
+	// 2.45*eV,2.48*eV,2.51*eV,2.54*eV,2.57*eV,
+	// 2.60*eV,2.63*eV,2.66*eV,2.69*eV,2.72*eV,
+	// 2.75*eV,2.78*eV,2.81*eV,2.84*eV,2.87*eV,
+	// 2.90*eV,2.93*eV,2.96*eV,2.99*eV,3.02*eV,
+	// 3.05*eV,3.08*eV,3.11*eV,3.14*eV,3.17*eV,
+	// 3.20*eV,3.23*eV,3.26*eV,3.29*eV,3.32*eV,
+	// 3.35*eV,3.38*eV,3.41*eV,3.44*eV,3.47*eV};
 
 protected:
-	 	G4LogicalVolume* fScoringVolume;
+	G4LogicalVolume* fScoringVolume;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif
