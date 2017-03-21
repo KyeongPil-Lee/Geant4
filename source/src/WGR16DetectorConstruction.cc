@@ -121,7 +121,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double nTower_PhiDir = 10;
 	G4double CuLen_PhiDir = (Circumference / nTower_PhiDir)*m;
 
-	G4double CuLen_EtaDir = CuLen_PhiDir*m;
+	G4double CuLen_EtaDir = CuLen_PhiDir;
 	G4double CuLen_H = 2.5*m;
 
 	G4cout << "[Cu] (PhiDir, EtaDir, Height (unit:m)) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
