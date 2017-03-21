@@ -39,14 +39,17 @@
 #include "G4Material.hh"
 #include "G4Element.hh"
 #include "G4MaterialTable.hh"
+#include "G4MaterialPropertiesTable.hh"
 #include "G4NistManager.hh"
 
 #include "G4VSolid.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4Trd.hh"
 #include "G4LogicalVolume.hh"
 #include "G4VPhysicalVolume.hh"
 #include "G4PVPlacement.hh"
+#include "G4IntersectionSolid.hh"
 #include "G4UserLimits.hh"
 #include "G4PVParameterised.hh"
 #include "G4ThreeVector.hh"
@@ -294,7 +297,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
 		{
 			G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
-			for(Int G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
+			for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
 			{
 				i_total++;
 				G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
@@ -540,14 +543,14 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Glas
 	    1.49, 1.49, 1.49, 1.49, 1.49, 1.49, 1.49, 1.49, 1.49, 1.49
 	};
 	
-	///--- For test ---
-	G4double RefractiveIndex_Glass[nEntries] =
-	{   1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
-	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
-	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
-	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
-	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00
-	};
+	// -- For test -- //
+	// G4double RefractiveIndex_Glass[nEntries] =
+	// {   1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	//     1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	//     1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	//     1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	//     1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00
+	// };
 
 	//Whenever I add some more detail optical properties, the GEANT4 will take lots of time to calculate
 	//additional optical properties. I use only refractive indices to save time.
@@ -603,7 +606,7 @@ G4MaterialPropertiesTable* MaterialPropertyTable_Air()
 
 bool WGR16DetectorConstruction::IsFiberC(G4int i_EtaDir, G4int i_PhiDir)
 {
-	Bool_t Flag = false;
+	bool Flag = false;
 	if( i_EtaDir % 2 == 0 ) // start with c fiber -- //
 	{
 		if( i_PhiDir % 2 == 0 ) // -- c fiber -- //
