@@ -111,6 +111,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	G4double z, a, density, fractionmass;
 	G4int ncomponents, natoms;
+	G4String symbol;
 	G4Element* H  = new G4Element("Hydrogen",symbol="H" , z= 1., a= 1.01*g/mole);
 	G4Element* C  = new G4Element("Carbon"  ,symbol="C" , z= 6., a= 12.01*g/mole);
 	G4Element* N  = new G4Element("Nitrogen",symbol="N" , z= 7., a= 14.01*g/mole);
