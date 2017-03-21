@@ -121,16 +121,14 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_EtaDir = CuLen_PhiDir;
 	G4double CuLen_H = 2.5;
 
-	G4out << "[Cu] (PhiDir, EtaDir, Height) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
+	G4cout << "[Cu] (PhiDir, EtaDir, Height) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
 
 	G4Box* CuBox 
 	= new G4Box("CuBox",CuLen_PhiDir/2.,CuLen_EtaDir/2.,CuLen_H/2.);
-
 	G4LogicalVolume *CuLogical
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
-
-	G4VPhysicalVolume* CuPhysical
-	= new G4PVPlacement( 0, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
+	// -- place it -- //
+	new G4PVPlacement( 0, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
 
 	return worldPhysical;
 }
