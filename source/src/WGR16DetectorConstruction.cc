@@ -198,8 +198,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space to avoid any overlap with tracker system -- //
-	G4double nTower_PhiDir = 283;
-	// G4double nTower_PhiDir = 20;
+	// G4double nTower_PhiDir = 283;
+	G4double nTower_PhiDir = 3;
 
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
