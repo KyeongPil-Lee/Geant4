@@ -106,7 +106,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	// -- world -- //
 	G4VSolid* worldSolid 
-	= new G4Box("worldBox",10.*m,10.*m,10.*m);
+	= new G4Box("worldBox",20.*m,20.*m,20.*m);
 	G4LogicalVolume* worldLogical
 	= new G4LogicalVolume(worldSolid,vac,"worldLogical");
 	G4VPhysicalVolume* worldPhysical
@@ -125,7 +125,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_PhiDir = 2*radius*std::tan(half_dPhi);
 
 	G4double CuLen_EtaDir = CuLen_PhiDir*2.0;
-	G4double CuLen_H = 10*m;
+	G4double CuLen_H = 2.5*m;
 
 	G4cout << "[Cu] (PhiDir, EtaDir, Height (unit:m)) = (" << CuLen_PhiDir << ", " << CuLen_EtaDir << ", " << CuLen_H << ", )" << G4endl;
 
@@ -135,6 +135,14 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	= new G4Box("CuBox", CuLen_EtaDir/2.0, CuLen_PhiDir/2., CuLen_H/2.0);
 	G4LogicalVolume *CuLogical
 	= new G4LogicalVolume(CuBox, cu, "CuLogical");
+
+	G4double CuTriLen_PhiDir = 2*CuLen_H*std::sin(half_dPhi);
+	G4double CuTriLen_EtaDir = CuLen_EtaDir;
+	G4double CuTrdLen_H = CuLen_H*std::cos(half_dPhi);
+	G4Trd *CuTrd
+	= new G4Trd("CuTrd", CuTriLen_EtaDir/2.0, CuTriLen_EtaDir/2.0, 0, CuTriLen_PhiDir/2.0, CuTrdLen_H/2.0);
+	G4LogicalVolume *CuTriLogical
+	= new G4LogicalVolume(CuTrd, cu, "CuTrdLogical");
 
 	// -- default unit for the rotation -- //
 
@@ -150,6 +158,17 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4Transform3D transform = G4Transform3D(rotM,position);
 
 		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
+
+		G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		G4RotationMatrix Trd_rotM = G4RotationMatrix();
+		Trd_rotM.rotateY(90*deg);
+		Trd_rotM.rotateZ(Trd_phi);
+
+		G4ThreeVector Trd_Unit_Z = G4ThreeVector(std::cos(Trd_phi),  std::sin(Trd_phi),0.);
+		G4ThreeVector Trd_position = (radius + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
+
+		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
 
 		// G4ThreeVector origin(x,y,z);
 		// G4RotationMatrix* RotMatrix = new G4RotationMatrix();
