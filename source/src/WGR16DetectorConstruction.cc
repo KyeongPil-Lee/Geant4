@@ -115,13 +115,13 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	//////////////////
 	// -- Cu box -- //
 	//////////////////
+	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space -- //
+	// G4double nTower_PhiDir = 283;
+	G4double nTower_PhiDir = 5;
+
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
 	G4double half_dPhi = 0.5*dPhi;
-
-	G4double radius = 1.8*m; // -- unit: m -- //
-	// G4double nTower_PhiDir = 283;
-	G4double nTower_PhiDir = 5;
 	G4double CuLen_PhiDir = 2*radius*std::tan(half_dPhi);
 
 	G4double CuLen_EtaDir = CuLen_PhiDir*2.0;
