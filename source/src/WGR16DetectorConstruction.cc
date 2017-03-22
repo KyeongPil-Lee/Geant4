@@ -271,7 +271,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// G4Material *PMTPC_Material = Al;
 
 	// -- fibre parameters -- //
-	G4double clad_C_rMin = 0.49*mm;
+	G4double clad_C_rMin = 0*mm;
 	G4double clad_C_rMax = 0.50*mm;
 	G4double clad_C_Dz   = 2.5*m;
 	G4double clad_C_Sphi = 0.;
@@ -305,13 +305,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 			cout << "This test setting may not work for this # tower = " << nTower_PhiDir << endl;
 		dist_btwCore = 250*mm; // -- when # tower = 10 -- //
 		clad_C_rMax = dist_btwCore / 3.0;
-		clad_C_rMin = clad_C_rMax * 0.98;
-
-		core_C_rMax = clad_C_rMin;
-		core_C_rMin = 0.*mm;
-
-		core_S_rMax = clad_C_rMin;
-		core_S_rMin = 0.*mm;
+		core_C_rMax = clad_C_rMax * 0.98;
+		core_S_rMax = clad_C_rMax * 0.98;
 	}
 
 	const G4int nFiber_PhiDir = floor( CuLen_PhiDir / dist_btwCore ) - 1;
@@ -426,7 +421,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
 				}
 
-				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", CuLogical, false, i_total, checkOverlaps);
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, i_total, checkOverlaps);
 
 				G4VisAttributes* visAttr = new G4VisAttributes();
 				if( isFiberC )
