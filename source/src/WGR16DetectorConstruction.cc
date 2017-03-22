@@ -438,7 +438,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		////////////////////////
 		// -- Cu trapezoid -- //
 		////////////////////////
-		G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		// G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
 		G4RotationMatrix Trd_rotM = G4RotationMatrix();
 		Trd_rotM.rotateY(90*deg);
 		Trd_rotM.rotateZ(Trd_phi);
