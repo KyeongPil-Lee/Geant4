@@ -53,6 +53,7 @@
 #include "G4UserLimits.hh"
 #include "G4PVParameterised.hh"
 #include "G4ThreeVector.hh"
+#include "G4OpticalSurface.hh"
 
 #include "G4SDManager.hh"
 #include "G4VSensitiveDetector.hh"
@@ -124,7 +125,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material* Al 
 	= new G4Material("Aluminium", z=13., a=26.98*g/mole, density=2.700*g/cm3);
 
-	G4double PMTT = 1*mm;
+	// G4double PMTT = 1*mm;
 
 	// -- Photocathod property -- //
 	G4MaterialPropertiesTable* mpPMTPC = this->MaterialPropertyTable_PMTPC();
