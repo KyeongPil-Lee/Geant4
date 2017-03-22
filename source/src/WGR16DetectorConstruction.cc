@@ -484,7 +484,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	G4VisAttributes* visAttr3 = new G4VisAttributes();
 	visAttr3->SetColour( G4Colour(0.0,1.0,0.0) ); // -- green -- //
-	visAttr3->SetForceSolid(true);
+	// visAttr3->SetForceSolid(true);
 	visAttr3->SetVisibility(true);
 	PMTGlassBox_Logic->SetVisAttributes(visAttr3);
 	fVisAttributes.push_back(visAttr3);
