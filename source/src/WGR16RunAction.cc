@@ -77,13 +77,18 @@ void WGR16RunAction::BeginOfRunAction(const G4Run* /*run*/)
   // Creating ntuple
   //
   if ( fEventAction ) {
-	
-	  
-	  analysisManager->FinishNtuple();
+    analysisManager->CreateNtuple("WGR16", "Hit Data");  // Branch Id = 0
+    analysisManager->CreateNtupleIColumn("Hitcnt",fEventAction->GetRofHitcntVec());
+	 analysisManager->CreateNtupleDColumn("EdepfromSteppingAction");
+	 analysisManager->CreateNtupleDColumn("Edep",fEventAction->GetRofEdepVec());
+	 analysisManager->FinishNtuple();
   }
+  // Open an output file 
   // The default file name is set in WGR16RunAction::WGR16RunAction(),
   // it can be overwritten in a macro
-  //analysisManager->OpenFile("example");
+//  for(unsigned int i = 2; i < std::strlen(tempS1);i++) if(tempS1[i]=='.') tempS1[i]='-';
+  //analysisManager->OpenFile(outputname);
+  analysisManager->OpenFile("example");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -93,8 +98,8 @@ void WGR16RunAction::EndOfRunAction(const G4Run* /*run*/)
   // save histograms & ntuple
   //
   G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-  //analysisManager->Write();
-  //analysisManager->CloseFile();
+  analysisManager->Write();
+  analysisManager->CloseFile();
   delete analysisManager;
 }
 
