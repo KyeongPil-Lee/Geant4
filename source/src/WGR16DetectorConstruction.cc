@@ -100,7 +100,7 @@ WGR16DetectorConstruction::~WGR16DetectorConstruction()
 
 G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 {
-	G4bool checkOverlaps = false;
+	G4bool checkOverlaps = true;
 
 	//////////////////////
 	// -- meterials -- //
@@ -472,6 +472,15 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	CuLogical->SetVisAttributes(visAttr);
 	fVisAttributes.push_back(visAttr);
 
+	G4VisAttributes* visAttr2 = new G4VisAttributes();
+	if( isFiberC )
+		visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+	else
+		visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
+	visAttr->SetForceSolid(true);
+	visAttr->SetVisibility(true);
+	FiberCore_Logic_ith->SetVisAttributes(visAttr);
+
 	return worldPhysical;
 }
 
@@ -739,8 +748,8 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_PMTP
 	G4MaterialPropertiesTable* mpPMTPC = new G4MaterialPropertiesTable();
 	mpPMTPC->AddProperty("REFLECTIVITY",p_mppc,refl_mppc,2);
 	mpPMTPC->AddProperty("EFFICIENCY",p_mppc,effi_mppc,2);
-	mpPMTPC->AddProperty("REALINDEX",p_mppc,photocath_ReR,2);
-	mpPMTPC->AddProperty("IMAGINARYINDEX",p_mppc,photocath_ImR,2);
+	// mpPMTPC->AddProperty("REALINDEX",p_mppc,photocath_ReR,2);
+	// mpPMTPC->AddProperty("IMAGINARYINDEX",p_mppc,photocath_ImR,2);
 	mpPMTPC->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Air, nEntries);
 
 	return mpPMTPC;
