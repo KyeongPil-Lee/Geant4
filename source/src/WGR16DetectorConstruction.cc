@@ -495,7 +495,7 @@ void WGR16DetectorConstruction::ConstructSDandField()
 
 	G4String PMTName = "WGR16/PMTSD";
 	G4String HitCollectionName = "PMTColl";
-	G4VSensitiveDetector* SD_PMTPC = new WGR16PMTSD(PMTName, HitCollectionName)
+	G4VSensitiveDetector* SD_PMTPC = new WGR16PMTSD(PMTName, HitCollectionName);
 
 	SDmanager->AddNewDetector(SD_PMTPC);
 	this->PMTPCBox_Logic->SetSensitiveDetector(SD_PMTPC);
