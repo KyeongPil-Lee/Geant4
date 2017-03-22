@@ -72,8 +72,8 @@ WGR16PrimaryGeneratorAction::~WGR16PrimaryGeneratorAction()
 
 void WGR16PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
-	//fParticleGun->SetParticleDefinition(OptGamma);
-	//fParticleGun->SetParticleEnergy(40*GeV);
+	fParticleGun->SetParticleDefinition(fOptGamma);
+	fParticleGun->SetParticleEnergy(2*eV);
 	G4ThreeVector Direction;
 	Direction.setREtaPhi(1,feta,fphi);
 	fParticleGun->SetParticleMomentumDirection(Direction);
