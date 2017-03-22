@@ -66,6 +66,7 @@ public:
 	G4MaterialPropertiesTable* MaterialPropertyTable_FS();
 	G4MaterialPropertiesTable* MaterialPropertyTable_Glass();
 	G4MaterialPropertiesTable* MaterialPropertyTable_Air();
+	G4MaterialPropertiesTable* MaterialPropertyTable_PMTPC();
 
 	bool IsFiberC(G4int i_EtaDir, G4int i_PhiDir);
 

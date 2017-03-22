@@ -123,9 +123,39 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material* Al 
 	= new G4Material("Aluminium", z=13., a=26.98*g/mole, density=2.700*g/cm3);
 
+
+	// // -- Photocathod property -- //
+	// G4double PMTT = 1*mm;
+	// G4double p_mppc[2] = {2.00*eV, 3.47*eV};
+	// G4double refl_mppc[2] = {0.0, 0.0};
+	// G4double effi_mppc[2] = {0.11, 0.11}; // mimic Quantum Efficiency
+	// G4double photocath_ReR[2] = {1.92, 1.92};
+	// G4double photocath_ImR[2] = {1.69, 1.69};
+	// mpPMTPC = new G4MaterialPropertiesTable();
+	// mpPMTPC->AddProperty("REFLECTIVITY",p_mppc,refl_mppc,2);
+	// mpPMTPC->AddProperty("EFFICIENCY",p_mppc,effi_mppc,2);
+	// mpPMTPC->AddProperty("REALINDEX",p_mppc,photocath_ReR,2);
+	// mpPMTPC->AddProperty("IMAGINARYINDEX",p_mppc,photocath_ImR,2);
+	// mpPMTPC->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Air, nEntries);
+
+	// G4double ephoton[] = {2.00*eV, 3.47*eV};
+	// const G4int num = sizeof(ephoton) / sizeof(G4double);
+
+	// G4double reficy[] = {0.0,0.0};
+	// G4double efficy[] = {1.0,1.0};
+	// G4MaterialPropertiesTable* scHsPT = new G4MaterialPropertiesTable();
+	// scHsPT->AddProperty("REFLECTIVITY",ephoton,reficy,num);
+	// scHsPT->AddProperty("EFFICIENCY",ephoton,efficy,num);
+	// G4OpticalSurface* OpScHsSurf = new G4OpticalSurface("PMTHousingSurface",unified,polished,dielectric_metal);
+	// OpScHsSurf->SetMaterialPropertiesTable(scHsPT);
+
+	// G4OpticalSurface* photocath_opsurf = new G4OpticalSurface("photocath_opsurf",glisur,polished,dielectric_metal);
+	// photocath_opsurf->SetMaterialPropertiesTable(mpPMTPC);
+
+
+
 	// new G4Material("Lead"     , z=82., a=207.19*g/mole, density=11.35*g/cm3);
 	// new G4Material("Copper"   , z=29., a=63.546*g/mole, density=8.96*g/cm3);
-
 
 	// -- for PMT Glass -- //
 	G4Material* Glass = new G4Material("Glass", density=1.032*g/cm3,2);
@@ -198,8 +228,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space to avoid any overlap with tracker system -- //
-	// G4double nTower_PhiDir = 283;
-	G4double nTower_PhiDir = 10;
+	G4double nTower_PhiDir = 283;
+	// G4double nTower_PhiDir = 10;
 
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
@@ -318,55 +348,55 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
 
-		// -- fibers -- //
-		G4int i_total = 0;
-		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
-		{
-			G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
-			for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
-			{
-				i_total++;
-				G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
+		// // -- fibers -- //
+		// G4int i_total = 0;
+		// for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
+		// {
+		// 	G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
+		// 	for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
+		// 	{
+		// 		i_total++;
+		// 		G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
 
-				// -- cladding: same shape for both C and S fiber -- //
-				G4VSolid* FiberClad_ith 
-				= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 		// -- cladding: same shape for both C and S fiber -- //
+		// 		G4VSolid* FiberClad_ith 
+		// 		= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
 
-				G4LogicalVolume *FiberClad_Logic_ith
-				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
+		// 		G4LogicalVolume *FiberClad_Logic_ith
+		// 		= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
 
-				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
+		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
 
-				// -- Cores -- //
-				G4VSolid* FiberCore_ith;
-				G4LogicalVolume *FiberCore_Logic_ith;
+		// 		// -- Cores -- //
+		// 		G4VSolid* FiberCore_ith;
+		// 		G4LogicalVolume *FiberCore_Logic_ith;
 
-				// -- s, c, s, c, ... -- //
-				// -- c, s, c, s, ... -- //
-				bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
-				if( isFiberC )
-				{
-					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
-				}
-				else
-				{
-					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
-				}
+		// 		// -- s, c, s, c, ... -- //
+		// 		// -- c, s, c, s, ... -- //
+		// 		bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
+		// 		if( isFiberC )
+		// 		{
+		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
+		// 		}
+		// 		else
+		// 		{
+		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
+		// 		}
 
-				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", CuLogical, false, i_total, checkOverlaps);
+		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", CuLogical, false, i_total, checkOverlaps);
 
-				G4VisAttributes* visAttr = new G4VisAttributes();
-				if( isFiberC )
-					visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
-				else
-					visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
-				visAttr->SetForceSolid();
-				visAttr->SetVisibility(true);
-				FiberCore_Logic_ith->SetVisAttributes(visAttr);
-			}
-		}
+		// 		G4VisAttributes* visAttr = new G4VisAttributes();
+		// 		if( isFiberC )
+		// 			visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+		// 		else
+		// 			visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
+		// 		visAttr->SetForceSolid(true);
+		// 		visAttr->SetVisibility(true);
+		// 		FiberCore_Logic_ith->SetVisAttributes(visAttr);
+		// 	}
+		// }
 
 		////////////////////////
 		// -- Cu trapezoid -- //
@@ -629,6 +659,11 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Air(
 	mpAir->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Air, nEntries);
 
 	return mpAir;
+}
+
+G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_PMTPC()
+{
+
 }
 
 bool WGR16DetectorConstruction::IsFiberC(G4int i_EtaDir, G4int i_PhiDir)
