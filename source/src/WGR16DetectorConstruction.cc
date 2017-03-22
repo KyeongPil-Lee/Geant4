@@ -445,7 +445,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		Trd_rotM.rotateZ(Trd_phi);
 
 		G4ThreeVector Trd_Unit_Z = G4ThreeVector(std::cos(Trd_phi),  std::sin(Trd_phi),0.);
-		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H+0.01*m)*Trd_Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
 
 		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
