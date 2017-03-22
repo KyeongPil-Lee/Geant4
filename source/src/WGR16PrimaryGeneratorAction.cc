@@ -59,7 +59,7 @@ feta(0),fphi(0)
 	
 	// default particle kinematics
 	G4double height = (1.8 + 2.5)*m + 2*mm;
-	fParticleGun->SetParticlePosition(G4ThreeVector(0., 0.*m, height));
+	fParticleGun->SetParticlePosition(G4ThreeVector(height, 0.*m, 0.*m));
 	
 	// define commands for this class
 	this->DefineCommands();
