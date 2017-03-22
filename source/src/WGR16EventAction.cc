@@ -89,20 +89,20 @@ void WGR16EventAction::EndOfEventAction(const G4Event* event)
 	G4int nHit = PMTHC->entries();
 	fHitcnt.push_back( nHit );
 
-	G4double EnergyDeposit_tot = 0;
-	for(G4int i=0; i<nHit; i++)
-	{
-		WGR16PMTHit* hit = (*PMTHC)[i];
-		G4double EnergyDeposit = hit->GetEdep();
-		fEdep.push_back( EnergyDeposit );
-		EnergyDeposit_tot += EnergyDeposit;
-	}
+	// G4double EnergyDeposit_tot = 0;
+	// for(G4int i=0; i<nHit; i++)
+	// {
+	// 	WGR16PMTHit* hit = (*PMTHC)[i];
+	// 	G4double EnergyDeposit = hit->GetEdep();
+	// 	fEdep.push_back( EnergyDeposit );
+	// 	EnergyDeposit_tot += EnergyDeposit;
+	// }
 
-	std::cout << "EnergyDeposit_tot: " << EnergyDeposit_tot << std::endl;
+	// std::cout << "EnergyDeposit_tot: " << EnergyDeposit_tot << std::endl;
 
-	// G4AnalysisManager* aM = G4AnalysisManager::Instance();
+	 G4AnalysisManager* aM = G4AnalysisManager::Instance();
 	// aM->FillNtupleDColumn(1,edep);// from Stepping Action
-	// aM->AddNtupleRow(0);
+	 aM->AddNtupleRow(0);
 }
 
 
