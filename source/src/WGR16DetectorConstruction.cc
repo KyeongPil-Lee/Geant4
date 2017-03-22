@@ -106,6 +106,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	/////////////////////
 	ConstructMaterials();
 	G4Material* vac = G4Material::GetMaterial("G4_Galactic");
+	G4Material* vac_PMTHouse = G4Material::GetMaterial("G4_Galactic");
 	G4Material* cu  = G4Material::GetMaterial("G4_Cu");
 	// const G4double cu_radlen = cu->GetRadlen(); // -- radiation length -- //
 
@@ -123,34 +124,19 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material* Al 
 	= new G4Material("Aluminium", z=13., a=26.98*g/mole, density=2.700*g/cm3);
 
+	G4double PMTT = 1*mm;
 
-	// // -- Photocathod property -- //
-	// G4double PMTT = 1*mm;
-	// G4double p_mppc[2] = {2.00*eV, 3.47*eV};
-	// G4double refl_mppc[2] = {0.0, 0.0};
-	// G4double effi_mppc[2] = {0.11, 0.11}; // mimic Quantum Efficiency
-	// G4double photocath_ReR[2] = {1.92, 1.92};
-	// G4double photocath_ImR[2] = {1.69, 1.69};
-	// mpPMTPC = new G4MaterialPropertiesTable();
-	// mpPMTPC->AddProperty("REFLECTIVITY",p_mppc,refl_mppc,2);
-	// mpPMTPC->AddProperty("EFFICIENCY",p_mppc,effi_mppc,2);
-	// mpPMTPC->AddProperty("REALINDEX",p_mppc,photocath_ReR,2);
-	// mpPMTPC->AddProperty("IMAGINARYINDEX",p_mppc,photocath_ImR,2);
-	// mpPMTPC->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Air, nEntries);
+	// -- Photocathod property -- //
+	G4MaterialPropertiesTable* mpPMTPC = this->MaterialPropertyTable_PMTPC();
+	Al->SetMaterialPropertiesTable( mpPMTPC );
+	G4OpticalSurface* OpSurf_PMTPC = new G4OpticalSurface("OpSurf_PMTPC",glisur,polished,dielectric_metal);
+	OpSurf_PMTPC->SetMaterialPropertiesTable(mpPMTPC);
 
-	// G4double ephoton[] = {2.00*eV, 3.47*eV};
-	// const G4int num = sizeof(ephoton) / sizeof(G4double);
+	G4MaterialPropertiesTable* mpPMTHouse = this->MaterialPropertyTable_PMTHouse();
+	vac_PMTHouse->SetMaterialPropertiesTable( mpPMTHouse );
+	G4OpticalSurface* OpSurf_PMTHouse = new G4OpticalSurface("OpSurf_PMTHouse",unified,polished,dielectric_metal);
+	OpSurf_PMTHouse->SetMaterialPropertiesTable(mpPMTHouse);
 
-	// G4double reficy[] = {0.0,0.0};
-	// G4double efficy[] = {1.0,1.0};
-	// G4MaterialPropertiesTable* scHsPT = new G4MaterialPropertiesTable();
-	// scHsPT->AddProperty("REFLECTIVITY",ephoton,reficy,num);
-	// scHsPT->AddProperty("EFFICIENCY",ephoton,efficy,num);
-	// G4OpticalSurface* OpScHsSurf = new G4OpticalSurface("PMTHousingSurface",unified,polished,dielectric_metal);
-	// OpScHsSurf->SetMaterialPropertiesTable(scHsPT);
-
-	// G4OpticalSurface* photocath_opsurf = new G4OpticalSurface("photocath_opsurf",glisur,polished,dielectric_metal);
-	// photocath_opsurf->SetMaterialPropertiesTable(mpPMTPC);
 
 
 
@@ -228,8 +214,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space to avoid any overlap with tracker system -- //
-	G4double nTower_PhiDir = 283;
-	// G4double nTower_PhiDir = 10;
+	// G4double nTower_PhiDir = 283;
+	G4double nTower_PhiDir = 10;
 
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
@@ -277,11 +263,11 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4Material *clad_S_Material = pmma_clad;
 	G4Material *core_S_Material = polystyrene;
 
-	// -- Material for PMT glass -- //
-	G4Material *Glass_Material = Glass;
+	// // -- Material for PMT glass -- //
+	// G4Material *Glass_Material = Glass;
 
-	// -- Material for PMT Photocathod -- //
-	G4Material *PMTPC_Material = Al;
+	// // -- Material for PMT Photocathod -- //
+	// G4Material *PMTPC_Material = Al;
 
 	// -- fibre parameters -- //
 	G4double clad_C_rMin = 0.49*mm;
@@ -311,6 +297,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double dist_btwCore = 1.5*mm;
 
 	bool Do_test = false;
+	if( nTower_PhiDir == 10 ) Do_test = true;
 	if( Do_test )
 	{
 		if( nTower_PhiDir != 10 )
@@ -340,6 +327,42 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4VSolid* fiberCoreC = new G4Tubs("fiberCoreC", 0.*mm, core_C_rMax, CuLen_H/2., core_C_Sphi, core_C_Dphi);
 	G4VSolid* fiberCoreS = new G4Tubs("fiberCoreS", 0.*mm, core_S_rMax, CuLen_H/2., core_S_Sphi, core_S_Dphi);
 
+	// -- PMT House, glass and PhotoCathod -- //
+	G4double PMTHouseLen_H = 3*mm;
+	G4double PMTHouseLen_EtaDir = CuLen_EtaDir;
+	G4double PMTHouseLen_PhiDir = CuLen_PhiDir;
+
+	G4double PMTGlassLen_H = 2*mm;
+	G4double PMTGlassLen_EtaDir	= PMTHouseLen_EtaDir;
+	G4double PMTGlassLen_PhiDir = PMTHouseLen_PhiDir;
+
+	G4double PMTPCLen_H = 1*mm;
+	G4double PMTPCLen_EtaDir = PMTHouseLen_EtaDir;
+	G4double PMTPCLen_PhiDir = PMTHouseLen_PhiDir;
+
+	if( Do_test )
+	{
+		PMTHouseLen_H *= 10;
+		PMTGlassLen_H *= 10;
+		PMTPCLen_H *= 10;
+	}
+
+	G4Box* PMTHouseBox 
+	= new G4Box("PMTHouseBox", PMTHouseLen_EtaDir/2.0, PMTHouseLen_PhiDir/2., PMTHouseLen_H/2.0);
+	G4LogicalVolume *PMTHouseBox_Logic
+	= new G4LogicalVolume(PMTHouseBox, vac_PMTHouse, "PMTHouseBox_Logic");
+
+	G4Box* PMTGlassBox 
+	= new G4Box("PMTGlassBox", PMTGlassLen_EtaDir/2.0, PMTGlassLen_PhiDir/2., PMTGlassLen_H/2.0);
+	G4LogicalVolume *PMTGlassBox_Logic
+	= new G4LogicalVolume(PMTGlassBox, Glass, "PMTGlassBox_Logic");
+
+	G4Box* PMTPCBox 
+	= new G4Box("PMTPCBox", PMTPCLen_EtaDir/2.0, PMTPCLen_PhiDir/2., PMTPCLen_H/2.0);
+	G4LogicalVolume *PMTPCBox_Logic
+	= new G4LogicalVolume(PMTPCBox, Al, "PMTPCBox_Logic");
+
+
 	// -- phi direction -- //
 	for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 	{
@@ -355,57 +378,65 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D transform = G4Transform3D(rotM,position);
 
-		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
+		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
 
-		// // -- fibers -- //
-		// G4int i_total = 0;
-		// for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
-		// {
-		// 	G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
-		// 	for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
-		// 	{
-		// 		i_total++;
-		// 		G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
+		// -- PMTs -- //
+		G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
+		G4Transform3D transform_PMTHouse = G4Transform3D(rotM,position_PMTHouse);
+		new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
 
-		// 		// -- cladding: same shape for both C and S fiber -- //
-		// 		G4VSolid* FiberClad_ith 
-		// 		= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+		new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
 
-		// 		G4LogicalVolume *FiberClad_Logic_ith
-		// 		= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
+		// -- fibers -- //
+		G4int i_total = 0;
+		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
+		{
+			G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
+			for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
+			{
+				i_total++;
+				G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
 
-		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
+				// -- cladding: same shape for both C and S fiber -- //
+				G4VSolid* FiberClad_ith 
+				= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
 
-		// 		// -- Cores -- //
-		// 		G4VSolid* FiberCore_ith;
-		// 		G4LogicalVolume *FiberCore_Logic_ith;
+				G4LogicalVolume *FiberClad_Logic_ith
+				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
 
-		// 		// -- s, c, s, c, ... -- //
-		// 		// -- c, s, c, s, ... -- //
-		// 		bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
-		// 		if( isFiberC )
-		// 		{
-		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
-		// 		}
-		// 		else
-		// 		{
-		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
-		// 		}
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
 
-		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", CuLogical, false, i_total, checkOverlaps);
+				// -- Cores -- //
+				G4VSolid* FiberCore_ith;
+				G4LogicalVolume *FiberCore_Logic_ith;
 
-		// 		G4VisAttributes* visAttr = new G4VisAttributes();
-		// 		if( isFiberC )
-		// 			visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
-		// 		else
-		// 			visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
-		// 		visAttr->SetForceSolid(true);
-		// 		visAttr->SetVisibility(true);
-		// 		FiberCore_Logic_ith->SetVisAttributes(visAttr);
-		// 	}
-		// }
+				// -- s, c, s, c, ... -- //
+				// -- c, s, c, s, ... -- //
+				bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
+				if( isFiberC )
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
+				}
+				else
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
+				}
+
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", CuLogical, false, i_total, checkOverlaps);
+
+				G4VisAttributes* visAttr = new G4VisAttributes();
+				if( isFiberC )
+					visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+				else
+					visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
+				visAttr->SetForceSolid(true);
+				visAttr->SetVisibility(true);
+				FiberCore_Logic_ith->SetVisAttributes(visAttr);
+			}
+		}
 
 		////////////////////////
 		// -- Cu trapezoid -- //
@@ -672,7 +703,61 @@ G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_Air(
 
 G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_PMTPC()
 {
+	G4double PhotonEnergy[] = {
+	2.00*eV,2.03*eV,2.06*eV,2.09*eV,2.12*eV,
+	2.15*eV,2.18*eV,2.21*eV,2.24*eV,2.27*eV,
+	2.30*eV,2.33*eV,2.36*eV,2.39*eV,2.42*eV,
+	2.45*eV,2.48*eV,2.51*eV,2.54*eV,2.57*eV,
+	2.60*eV,2.63*eV,2.66*eV,2.69*eV,2.72*eV,
+	2.75*eV,2.78*eV,2.81*eV,2.84*eV,2.87*eV,
+	2.90*eV,2.93*eV,2.96*eV,2.99*eV,3.02*eV,
+	3.05*eV,3.08*eV,3.11*eV,3.14*eV,3.17*eV,
+	3.20*eV,3.23*eV,3.26*eV,3.29*eV,3.32*eV,
+	3.35*eV,3.38*eV,3.41*eV,3.44*eV,3.47*eV};
 
+	const G4int nEntries = sizeof(PhotonEnergy) / sizeof(G4double);
+
+	//
+	//Air
+	//
+	G4double RefractiveIndex_Air[nEntries] =
+	{
+	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00,
+	    1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00, 1.00
+	};
+
+	G4double p_mppc[2] = {2.00*eV, 3.47*eV};
+	G4double refl_mppc[2] = {0.0, 0.0};
+	G4double effi_mppc[2] = {0.11, 0.11}; // mimic Quantum Efficiency
+	G4double photocath_ReR[2] = {1.92, 1.92};
+	G4double photocath_ImR[2] = {1.69, 1.69};
+
+	G4MaterialPropertiesTable* mpPMTPC = new G4MaterialPropertiesTable();
+	mpPMTPC->AddProperty("REFLECTIVITY",p_mppc,refl_mppc,2);
+	mpPMTPC->AddProperty("EFFICIENCY",p_mppc,effi_mppc,2);
+	mpPMTPC->AddProperty("REALINDEX",p_mppc,photocath_ReR,2);
+	mpPMTPC->AddProperty("IMAGINARYINDEX",p_mppc,photocath_ImR,2);
+	mpPMTPC->AddProperty("RINDEX", PhotonEnergy, RefractiveIndex_Air, nEntries);
+
+	return mpPMTPC;
+}
+
+G4MaterialPropertiesTable* WGR16DetectorConstruction::MaterialPropertyTable_PMTHouse()
+{
+	G4double ephoton[] = {2.00*eV, 3.47*eV};
+	const G4int num = sizeof(ephoton) / sizeof(G4double);
+
+	G4double reficy[] = {0.0,0.0};
+	G4double efficy[] = {1.0,1.0};
+
+	G4MaterialPropertiesTable* mpPMTHouse = new G4MaterialPropertiesTable();
+	mpPMTHouse->AddProperty("REFLECTIVITY",ephoton,reficy,num);
+	mpPMTHouse->AddProperty("EFFICIENCY",ephoton,efficy,num);
+
+	return mpPMTHouse;
 }
 
 bool WGR16DetectorConstruction::IsFiberC(G4int i_EtaDir, G4int i_PhiDir)
