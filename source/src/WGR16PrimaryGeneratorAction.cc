@@ -58,7 +58,8 @@ feta(0),fphi(0)
 	fOptGamma = particleTable->FindParticle(particleName="opticalphoton");
 	
 	// default particle kinematics
-	fParticleGun->SetParticlePosition(G4ThreeVector(0., 0.*m, 0.*m));
+	G4double height = (1.8 + 2.5)*m + 2*mm;
+	fParticleGun->SetParticlePosition(G4ThreeVector(0., 0.*m, height));
 	
 	// define commands for this class
 	this->DefineCommands();
