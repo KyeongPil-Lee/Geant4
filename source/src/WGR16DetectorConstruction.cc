@@ -476,14 +476,14 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	visAttr2->SetColour( G4Colour(1.0,0.0,0.0) ); // -- blue -- //
 	visAttr2->SetForceSolid(true);
 	visAttr2->SetVisibility(true);
-	PMTPCBox->SetVisAttributes(visAttr2);
+	PMTPCBox_Logic->SetVisAttributes(visAttr2);
 	fVisAttributes.push_back(visAttr2);
 
 	G4VisAttributes* visAttr3 = new G4VisAttributes();
 	visAttr3->SetColour( G4Colour(1.0,0.0,0.0) ); // -- blue -- //
 	visAttr3->SetForceSolid(true);
 	visAttr3->SetVisibility(true);
-	PMTGlassBox->SetVisAttributes(visAttr3);
+	PMTGlassBox_Logic->SetVisAttributes(visAttr3);
 	fVisAttributes.push_back(visAttr3);
 
 	return worldPhysical;
