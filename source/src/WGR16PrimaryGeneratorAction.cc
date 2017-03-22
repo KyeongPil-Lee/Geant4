@@ -39,7 +39,7 @@
 #include "Randomize.hh"
 
 WGR16PrimaryGeneratorAction::WGR16PrimaryGeneratorAction():
-: G4VUserPrimaryGeneratorAction(),
+G4VUserPrimaryGeneratorAction(),
 fParticleGun(0), fMessenger(0), 
 fElectron(0), fPositron(0), fMuon(0), fPion(0), fKaon(0), fProton(0), fOptGamma(0),
 feta(0),fphi(0)
