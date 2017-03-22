@@ -54,6 +54,7 @@
 #include "G4PVParameterised.hh"
 #include "G4ThreeVector.hh"
 #include "G4OpticalSurface.hh"
+#include "G4LogicalSkinSurface.hh"
 
 #include "G4SDManager.hh"
 #include "G4VSensitiveDetector.hh"
@@ -359,7 +360,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	this->PMTPCBox_Logic
 	= new G4LogicalVolume(PMTPCBox, Al, "PMTPCBox_Logic");
 
-	new G4LogicalSkinSurface("SkinSurf_PMTHouse", PMTHouseBox_Logic, OpSurf_PMTHouse);
+	// new G4LogicalSkinSurface("SkinSurf_PMTHouse", PMTHouseBox_Logic, OpSurf_PMTHouse);
 	new G4LogicalSkinSurface("SkinSurf_PMTPC", PMTPCBox_Logic, OpSurf_PMTPC);
 
 	// -- iteration for phi direction -- //

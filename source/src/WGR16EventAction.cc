@@ -98,7 +98,7 @@ void WGR16EventAction::EndOfEventAction(const G4Event* event)
 		EnergyDeposit_tot += EnergyDeposit;
 	}
 
-	cout << "EnergyDeposit_tot: " << EnergyDeposit_tot << endl;
+	std::cout << "EnergyDeposit_tot: " << EnergyDeposit_tot << std::endl;
 
 	// G4AnalysisManager* aM = G4AnalysisManager::Instance();
 	// aM->FillNtupleDColumn(1,edep);// from Stepping Action

@@ -41,7 +41,7 @@
 #include "G4ParticleTypes.hh"
 
 WGR16PMTSD::WGR16PMTSD(const G4String& name, const G4String& hitsCollectionName):
-: G4VSensitiveDetector(name), 
+G4VSensitiveDetector(name), 
 fHitsCollection(0), fHCID(-1)
 {
 	collectionName.insert(hitsCollectionName);
