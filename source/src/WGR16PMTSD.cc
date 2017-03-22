@@ -60,8 +60,7 @@ WGR16PMTSD::~WGR16PMTSD()
 
 void WGR16PMTSD::Initialize(G4HCofThisEvent* hce)
 {
-    fHitsCollection = new WGR16PMTHitsCollection
-    (SensitiveDetectorName,collectionName[0]);
+    fHitsCollection = new WGR16PMTHitsCollection(SensitiveDetectorName,collectionName[0]);
     if (fHCID<0)
     { fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection); }
     hce->AddHitsCollection(fHCID,fHitsCollection);

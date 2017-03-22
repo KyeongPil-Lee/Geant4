@@ -76,6 +76,7 @@ private:
 
 	G4GenericMessenger* fMessenger;
 	
+	G4LogicalVolume* PMTPCBox_Logic; // -- for sensitive detector -- //
 	static G4ThreadLocal WGR16MagneticField* fMagneticField;
 	static G4ThreadLocal G4FieldManager* fFieldMgr;
 	std::vector<G4VisAttributes*> fVisAttributes;

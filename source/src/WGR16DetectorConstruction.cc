@@ -356,7 +356,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	G4Box* PMTPCBox 
 	= new G4Box("PMTPCBox", PMTPCLen_EtaDir/2.0, PMTPCLen_PhiDir/2., PMTPCLen_H/2.0);
-	G4LogicalVolume *PMTPCBox_Logic
+	this->PMTPCBox_Logic
 	= new G4LogicalVolume(PMTPCBox, Al, "PMTPCBox_Logic");
 
 
@@ -383,7 +383,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
 
 		new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
-		new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+		new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), this->PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
 
 		// // -- fibers -- //
 		// G4int i_total = 0;
@@ -476,7 +476,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	visAttr2->SetColour( G4Colour(1.0,0.0,0.0) ); // -- red -- //
 	visAttr2->SetForceSolid(true);
 	visAttr2->SetVisibility(true);
-	PMTPCBox_Logic->SetVisAttributes(visAttr2);
+	this->PMTPCBox_Logic->SetVisAttributes(visAttr2);
 	fVisAttributes.push_back(visAttr2);
 
 	G4VisAttributes* visAttr3 = new G4VisAttributes();
@@ -491,7 +491,14 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 void WGR16DetectorConstruction::ConstructSDandField()
 {
+	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
 
+	G4String PMTName = "WGR16/PMTSD";
+	G4String HitCollectionName = "PMTColl";
+	G4VSensitiveDetector* SD_PMTPC = new WGR16PMTSD(PMTName, HitCollectionName)
+
+	SDmanager->AddNewDetector(SD_PMTPC);
+	this->PMTPCBox_Logic->SetSensitiveDetector(SD_PMTPC);
 }
 
 void WGR16DetectorConstruction::ConstructMaterials()
