@@ -40,59 +40,45 @@
 #include "G4ParticleDefinition.hh"
 #include "G4ParticleTypes.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-//WGR16PMTSD::WGR16PMTSD(G4String name)
-WGR16PMTSD::WGR16PMTSD(const G4String& name,
-									const G4String& hitsCollectionName)
-: G4VSensitiveDetector(name), fHitsCollection(0), fHCID(-1)
+WGR16PMTSD::WGR16PMTSD(const G4String& name, const G4String& hitsCollectionName):
+: G4VSensitiveDetector(name), 
+fHitsCollection(0), fHCID(-1)
 {
-   // G4String HCname = "PMTColl";
-    collectionName.insert(hitsCollectionName);
+	collectionName.insert(hitsCollectionName);
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 WGR16PMTSD::~WGR16PMTSD()
-{}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-void WGR16PMTSD::Initialize(G4HCofThisEvent* hce)
 {
-    fHitsCollection = new WGR16PMTHitsCollection(SensitiveDetectorName,collectionName[0]);
-    if (fHCID<0)
-    { fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection); }
-    hce->AddHitsCollection(fHCID,fHitsCollection);
+
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void WGR16PMTSD::Initialize(G4HCofThisEvent* HCOfThisEvent)
+{
+	fHitsCollection = new WGR16PMTHitsCollection(SensitiveDetectorName,collectionName[0]);
+	if( fHCID < 0 )
+		fHCID = G4SDManager::GetSDMpointer()->GetCollectionID(fHitsCollection);
+	HCOfThisEvent->AddHitsCollection(fHCID, fHitsCollection);
+}
 
 G4bool WGR16PMTSD::ProcessHits(G4Step* step, G4TouchableHistory*)
 {
-
-  WGR16PMTHit* newHit = new WGR16PMTHit();
-
-
-  fHitsCollection->insert( newHit );
-
-
-
-  return true;
-
-
+	WGR16PMTHit* newHit = new WGR16PMTHit();
+	fHitsCollection->insert( newHit );
+	return true;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void WGR16PMTSD::EndOfEvent(G4HCofThisEvent*)
 {
-	if ( verboseLevel>1 ) { 
+	if( verboseLevel > 1 )
+	{
 		G4int nofHits = fHitsCollection->entries();
-		G4cout
-			<< G4endl 
-			<< "-------->Hits Collection: in this event they are " << nofHits
-			<< " hits in the tracker chambers: " << G4endl;
-		for ( G4int i=0; i<nofHits; i++ ) (*fHitsCollection)[i]->Print();
+		G4cout << G4endl
+		<< "-------->Hits Collection: in this event they are " << nofHits
+		<< " hits in the tracker chambers: " << G4endl;
+
+		for( G4int i=0; i<nofHits; i++ ) 
+			(*fHitsCollection)[i]->Print();
 	}
 }
+
 

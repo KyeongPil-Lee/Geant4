@@ -37,26 +37,28 @@
 
 #include <vector>
 
-/// Event action
-
 class WGR16EventAction : public G4UserEventAction
 {
 public:
-    WGR16EventAction();
-    virtual ~WGR16EventAction();
+	WGR16EventAction();
+	virtual ~WGR16EventAction();
 
+	virtual void BeginOfEventAction(const G4Event*);
+	virtual void EndOfEventAction(const G4Event*);
 
-    virtual void BeginOfEventAction(const G4Event*);
-    virtual void EndOfEventAction(const G4Event*);
+	std::vector<G4int>& GetRofHitcntVec() { return fHitcnt; }
+	std::vector<G4int>& GetRofPMTNumVec() { return fPMTNum; }
+	std::vector<G4double>& GetRofEdepVec() { return fEdep; }
 
+private:
+	void ClearVectors();
 
-	private:
-	 void ClearVectors();
+	std::vector<G4int> fPMTNum;
+	std::vector<G4int> fHitcnt;
+	std::vector<G4double> fEdep;
 
-	 
-
+	G4double edep;
+	G4int PMTHCID;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

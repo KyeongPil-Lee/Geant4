@@ -38,47 +38,40 @@
 #include "G4SystemOfUnits.hh"
 #include "Randomize.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-WGR16PrimaryGeneratorAction::WGR16PrimaryGeneratorAction()
-: G4VUserPrimaryGeneratorAction(),     
-  fParticleGun(0), fMessenger(0), 
-  fElectron(0), fPositron(0), fMuon(0), fPion(0), fKaon(0), fProton(0),fOptGamma(0)
-	,feta(0),fphi(0)
+WGR16PrimaryGeneratorAction::WGR16PrimaryGeneratorAction():
+: G4VUserPrimaryGeneratorAction(),
+fParticleGun(0), fMessenger(0), 
+fElectron(0), fPositron(0), fMuon(0), fPion(0), fKaon(0), fProton(0), fOptGamma(0),
+feta(0),fphi(0)
 {
-    G4int n_particle = 1;
-    fParticleGun  = new G4ParticleGun(n_particle);
-    
-    G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
-    G4String particleName;
-    fElectron = particleTable->FindParticle(particleName="e-");
-    fPositron = particleTable->FindParticle(particleName="e+");
-    fMuon = particleTable->FindParticle(particleName="mu+");
-    fPion = particleTable->FindParticle(particleName="pi+");
-    fKaon = particleTable->FindParticle(particleName="kaon+");
-    fProton = particleTable->FindParticle(particleName="proton");
-    fOptGamma = particleTable->FindParticle(particleName="opticalphoton");
-    
-    // default particle kinematics
-    fParticleGun->SetParticlePosition(G4ThreeVector(0.,0.*m,-4*m));
-    
-    // define commands for this class
-    DefineCommands();
+	G4int n_particle = 1;
+	fParticleGun  = new G4ParticleGun(n_particle);
+	
+	G4ParticleTable* particleTable = G4ParticleTable::GetParticleTable();
+	G4String particleName;
+	fElectron = particleTable->FindParticle(particleName="e-");
+	fPositron = particleTable->FindParticle(particleName="e+");
+	fMuon = particleTable->FindParticle(particleName="mu+");
+	fPion = particleTable->FindParticle(particleName="pi+");
+	fKaon = particleTable->FindParticle(particleName="kaon+");
+	fProton = particleTable->FindParticle(particleName="proton");
+	fOptGamma = particleTable->FindParticle(particleName="opticalphoton");
+	
+	// default particle kinematics
+	fParticleGun->SetParticlePosition(G4ThreeVector(0., 0.*m, 0.*m));
+	
+	// define commands for this class
+	this->DefineCommands();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 WGR16PrimaryGeneratorAction::~WGR16PrimaryGeneratorAction()
 {
-    delete fParticleGun;
-    delete fMessenger;
+	delete fParticleGun;
+	delete fMessenger;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void WGR16PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 {
-
 	//fParticleGun->SetParticleDefinition(OptGamma);
 	//fParticleGun->SetParticleEnergy(40*GeV);
 	G4ThreeVector Direction;
@@ -87,26 +80,17 @@ void WGR16PrimaryGeneratorAction::GeneratePrimaries(G4Event* event)
 	fParticleGun->GeneratePrimaryVertex(event);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 void WGR16PrimaryGeneratorAction::DefineCommands()
 {
-    // Define /WGR16/generator command directory using generic messenger class
-    fMessenger 
-      = new G4GenericMessenger(this, 
-                               "/WGR16/generator/", 
-                               "Primary generator control");
-             
-	 G4GenericMessenger::Command& etaCmd
-		 =fMessenger->DeclareMethodWithUnit("eta","rad",&WGR16PrimaryGeneratorAction::SetEta,"eta of beam");
+	fMessenger = new G4GenericMessenger(this, "/WGR16/generator/", "Primary generator control");
+
+	 G4GenericMessenger::Command& etaCmd =
+	 fMessenger->DeclareMethodWithUnit("eta","rad",&WGR16PrimaryGeneratorAction::SetEta,"eta of beam");
 	 etaCmd.SetParameterName("eta",true);
 	 etaCmd.SetDefaultValue("0.");
 
-	 G4GenericMessenger::Command& phiCmd
-		 =fMessenger->DeclareMethodWithUnit("phi","rad",&WGR16PrimaryGeneratorAction::SetPhi,"eta of beam");
+	 G4GenericMessenger::Command& phiCmd =
+	 fMessenger->DeclareMethodWithUnit("phi","rad",&WGR16PrimaryGeneratorAction::SetPhi,"phi of beam");
 	 phiCmd.SetParameterName("phi",true);
 	 phiCmd.SetDefaultValue("0.");
-    
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

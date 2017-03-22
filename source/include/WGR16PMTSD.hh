@@ -43,20 +43,17 @@ class G4TouchableHistory;
 class WGR16PMTSD : public G4VSensitiveDetector
 {
 public:
-    //WGR16PMTSD(G4String name);
-    WGR16PMTSD(const G4String& name,
-			 			const G4String& hitsCollectionName);
-	 virtual ~WGR16PMTSD();
-    
-    virtual void Initialize(G4HCofThisEvent*HCE);
-    virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
-    virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
+	//WGR16PMTSD(G4String name);
+	WGR16PMTSD(const G4String& name, const G4String& hitsCollectionName);
+	virtual ~WGR16PMTSD();
+
+	virtual void Initialize(G4HCofThisEvent* HCOfThisEvent);
+	virtual G4bool ProcessHits(G4Step*aStep,G4TouchableHistory*ROhist);
+	virtual void   EndOfEvent(G4HCofThisEvent* hitCollection);
 
 private:
-    WGR16PMTHitsCollection* fHitsCollection;
-    G4int fHCID;
+	WGR16PMTHitsCollection* fHitsCollection;
+	G4int fHCID;
 };
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #endif

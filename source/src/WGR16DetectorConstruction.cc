@@ -215,8 +215,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space to avoid any overlap with tracker system -- //
-	// G4double nTower_PhiDir = 283;
-	G4double nTower_PhiDir = 10;
+	G4double nTower_PhiDir = 283;
+	// G4double nTower_PhiDir = 10;
 
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
@@ -225,7 +225,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_EtaDir = CuLen_PhiDir;
 	G4double CuLen_H = 2.5*m;
 
-	bool DrawOneUnitTower = false;
+	bool DrawOneUnitTower = true;
 	if( DrawOneUnitTower )
 	{
 		if( nTower_PhiDir != 283 ) cout << "nTower_PhiDir = " << nTower_PhiDir << " should be 283 for correct geometry" << endl;
@@ -359,8 +359,10 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	this->PMTPCBox_Logic
 	= new G4LogicalVolume(PMTPCBox, Al, "PMTPCBox_Logic");
 
+	new G4LogicalSkinSurface("SkinSurf_PMTHouse", PMTHouseBox_Logic, OpSurf_PMTHouse);
+	new G4LogicalSkinSurface("SkinSurf_PMTPC", PMTPCBox_Logic, OpSurf_PMTPC);
 
-	// -- phi direction -- //
+	// -- iteration for phi direction -- //
 	for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 	{
 		//////////////////
@@ -375,7 +377,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D transform = G4Transform3D(rotM,position);
 
-		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
+		// new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
 
 		// -- PMTs -- //
 		G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
@@ -428,7 +430,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		// 		if( isFiberC )
 		// 			visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
 		// 		else
-		// 			visAttr->SetColour( G4Colour(0.0,1.0,0.0) );  // -- green -- //
+		// 			visAttr->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
 		// 		visAttr->SetForceSolid(true);
 		// 		visAttr->SetVisibility(true);
 		// 		FiberCore_Logic_ith->SetVisAttributes(visAttr);
@@ -448,7 +450,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
 
-		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+		// new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
 
 
 
@@ -480,7 +482,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	fVisAttributes.push_back(visAttr2);
 
 	G4VisAttributes* visAttr3 = new G4VisAttributes();
-	visAttr3->SetColour( G4Colour(1.0,1.0,0.0) ); // -- yellow -- //
+	visAttr3->SetColour( G4Colour(0.0,1.0,0.0) ); // -- green -- //
 	visAttr3->SetForceSolid(true);
 	visAttr3->SetVisibility(true);
 	PMTGlassBox_Logic->SetVisAttributes(visAttr3);
@@ -491,13 +493,13 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 void WGR16DetectorConstruction::ConstructSDandField()
 {
-	G4SDManager* SDmanager = G4SDManager::GetSDMpointer();
+	G4SDManager* SDManager = G4SDManager::GetSDMpointer();
 
 	G4String PMTName = "WGR16/PMTSD";
 	G4String HitCollectionName = "PMTColl";
 	G4VSensitiveDetector* SD_PMTPC = new WGR16PMTSD(PMTName, HitCollectionName);
 
-	SDmanager->AddNewDetector(SD_PMTPC);
+	SDManager->AddNewDetector(SD_PMTPC);
 	this->PMTPCBox_Logic->SetSensitiveDetector(SD_PMTPC);
 }
 

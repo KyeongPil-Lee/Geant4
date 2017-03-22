@@ -44,54 +44,67 @@
 #include <string.h>
 #include <vector>
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-WGR16EventAction::WGR16EventAction()
-: G4UserEventAction()
-  
-	
+WGR16EventAction::WGR16EventAction(): G4UserEventAction(),
+fHitcnt(0), fPMTNum(0),
+fEdep(0), PMTHCID(0)
 {
-  // set printing per each event
-  G4RunManager::GetRunManager()->SetPrintProgress(1);
-
+	// -- set printing per each event -- //
+	G4RunManager::GetRunManager()->SetPrintProgress(1);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 WGR16EventAction::~WGR16EventAction()
-{}
+{
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+}
 
 void WGR16EventAction::BeginOfEventAction(const G4Event*)
 {
-   ClearVectors();
+	edep = 0;
+	ClearVectors();
 	G4SDManager* sdManager = G4SDManager::GetSDMpointer();
+	PMTHCID = sdManager->GetCollectionID("PMTColl");// get the ID of HitCollection
+}
 
-}     
 
 void WGR16EventAction::ClearVectors()
 {
+	fHitcnt.clear();
+	fPMTNum.clear();
+	fEdep.clear();
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void WGR16EventAction::EndOfEventAction(const G4Event* event)
 {
-	G4HCofThisEvent* hce = event->GetHCofThisEvent();
-	if (!hce) 
+	G4HCofThisEvent* HitCollection = event->GetHCofThisEvent();
+	if( !HitCollection )
 	{
 		G4ExceptionDescription msg;
-		msg << "No hits collection of this event found." << G4endl; 
-		G4Exception("WGR16EventAction::EndOfEventAction()",
-				"WGR16Code001", JustWarning, msg);
+		msg << "No hits collection of this event found." << G4endl;
+		G4Exception("WGR16EventAction::EndOfEventAction()",	"WGR16Code001", JustWarning, msg);
 		return;
-	}   
-	G4AnalysisManager* aM = G4AnalysisManager::Instance();
-	
-	
-	
-	aM->AddNtupleRow(0);
+	}
+
+	// WGR16PMTHitsCollection* PMTHC = static_cast<WGR16PMTHitsCollection*>(hce->GetHC(0));
+	WGR16PMTHitsCollection* PMTHC = static_cast<WGR16PMTHitsCollection*>(HitCollection->GetHC(PMTHCID));		
+	G4int nHit = PMTHC->entries();
+	fHitcnt.push_back( nHit );
+
+	G4double EnergyDeposit_tot = 0;
+	for(G4int i=0; i<nHit; i++)
+	{
+		WGR16PMTHit* hit = (*PMTHC)[i];
+		G4double EnergyDeposit = hit->GetEdep();
+		fEdep.push_back( EnergyDeposit );
+		EnergyDeposit_tot += EnergyDeposit;
+	}
+
+	cout << "EnergyDeposit_tot: " << EnergyDeposit_tot << endl;
+
+	// G4AnalysisManager* aM = G4AnalysisManager::Instance();
+	// aM->FillNtupleDColumn(1,edep);// from Stepping Action
+	// aM->AddNtupleRow(0);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+
+
