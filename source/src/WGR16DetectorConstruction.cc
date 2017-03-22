@@ -215,8 +215,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- Cu box -- //
 	//////////////////
 	G4double radius = 1.8*m; // -- size of inner tracker: it should be empty space to avoid any overlap with tracker system -- //
-	G4double nTower_PhiDir = 283;
-	// G4double nTower_PhiDir = 10;
+	// G4double nTower_PhiDir = 283;
+	G4double nTower_PhiDir = 10;
 
 	G4double pi = 3.14159265359;
 	G4double dPhi = (2*pi) / nTower_PhiDir;
@@ -225,7 +225,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_EtaDir = CuLen_PhiDir;
 	G4double CuLen_H = 2.5*m;
 
-	bool DrawOneUnitTower = true;
+	bool DrawOneUnitTower = false;
 	if( DrawOneUnitTower )
 	{
 		if( nTower_PhiDir != 283 ) cout << "nTower_PhiDir = " << nTower_PhiDir << " should be 283 for correct geometry" << endl;
@@ -445,7 +445,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		Trd_rotM.rotateZ(Trd_phi);
 
 		G4ThreeVector Trd_Unit_Z = G4ThreeVector(std::cos(Trd_phi),  std::sin(Trd_phi),0.);
-		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H+0.01*mm)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
 
 		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
