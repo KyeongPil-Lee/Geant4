@@ -7,9 +7,9 @@ fi
 
 export KP_ANALYZER_PATH=$(pwd)
 
-if [ $HOSTNAME == "charm" ]; then 
-	scl enable devtoolset-2 bash # -- enable gcc 4.8 -- #
+if [ $HOSTNAME == "charm" ]; then
 	source /usr/local/Geant4/bin/geant4.sh
+	#scl enable devtoolset-2 bash # -- enable gcc 4.8 -- #
 fi
 
 echo "================ environment ================"
@@ -28,3 +28,7 @@ if [ -z $G4ENSDFSTATEDATA ]; then
 fi
 echo "============================================="
 echo "setup is finished. Welcome :)"
+
+if [ $HOSTNAME == "charm" ]; then
+	scl enable devtoolset-2 bash # -- enable gcc 4.8 -- #
+fi
