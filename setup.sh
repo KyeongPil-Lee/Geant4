@@ -30,5 +30,6 @@ echo "============================================="
 echo "setup is finished. Welcome :)"
 
 if [ $HOSTNAME == "charm" ]; then
+	echo "Use gcc 4.8 at CentOS6: scl enable devtoolset-2 bash"
 	scl enable devtoolset-2 bash # -- enable gcc 4.8 -- #
 fi
