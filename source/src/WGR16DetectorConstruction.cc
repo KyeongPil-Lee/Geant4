@@ -226,7 +226,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double CuLen_EtaDir = CuLen_PhiDir;
 	G4double CuLen_H = 2.5*m;
 
-	bool DrawOneUnitTower = true;
+	bool DrawOneUnitTower = false;
 	if( DrawOneUnitTower )
 	{
 		if( nTower_PhiDir != 283 ) cout << "nTower_PhiDir = " << nTower_PhiDir << " should be 283 for correct geometry" << endl;
