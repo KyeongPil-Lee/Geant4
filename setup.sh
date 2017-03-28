@@ -32,7 +32,3 @@ if [ -z $G4ENSDFSTATEDATA ]; then
 fi
 echo "============================================="
 echo "setup is finished. Welcome :)"
-
-if [ $HOSTNAME == "charm" ]; then
-
-fi
