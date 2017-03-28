@@ -378,7 +378,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D transform = G4Transform3D(rotM,position);
 
-		// new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
+		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
 
 		// -- PMTs -- //
 		// G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
