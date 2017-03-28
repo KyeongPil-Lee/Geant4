@@ -381,12 +381,12 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		// new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
 
 		// -- PMTs -- //
-		G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
-		G4Transform3D transform_PMTHouse = G4Transform3D(rotM,position_PMTHouse);
-		new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
+		// G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
+		// G4Transform3D transform_PMTHouse = G4Transform3D(rotM,position_PMTHouse);
+		// new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
 
-		new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
-		new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), this->PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+		// new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+		// new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), this->PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
 
 		// // -- fibers -- //
 		// G4int i_total = 0;
@@ -451,7 +451,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 		G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
 		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
 
-		// new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
 
 
 
