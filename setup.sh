@@ -8,7 +8,11 @@ fi
 export KP_ANALYZER_PATH=$(pwd)
 
 if [ $HOSTNAME == "charm" ]; then
-	source /usr/local/Geant4/bin/geant4.sh
+	echo "Use gcc 4.8 at CentOS6: scl enable devtoolset-2 bash"
+	echo "Please do below line:"
+	echo "source /usr/local/Geant4/bin/geant4.sh"
+	scl enable devtoolset-2 bash
+
 	# EOF
 fi
 
@@ -30,6 +34,5 @@ echo "============================================="
 echo "setup is finished. Welcome :)"
 
 if [ $HOSTNAME == "charm" ]; then
-	echo "To use gcc 4.8 at CentOS6: source below line:"
-	echo "scl enable devtoolset-2 bash"
+
 fi
