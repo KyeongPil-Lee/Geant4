@@ -467,8 +467,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 	// -- iteration for phi direction -- //
 	// i_cu = 0 // -- to test without phi rotation -- //
-	// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
-	for(G4int i_cu=0; i_cu<0; i_cu++)
+	for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
+	// for(G4int i_cu=0; i_cu<0; i_cu++)
 	{
 		G4int i_barrel = 0; // for a test -- //
 		//////////////////
