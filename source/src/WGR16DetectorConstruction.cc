@@ -654,6 +654,8 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 		// -- place it -- //
 		// new G4PVPlacement( RotMatrix, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
+
+		break;
 	}
 
 	// -- visualization -- //
