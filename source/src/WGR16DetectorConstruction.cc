@@ -405,7 +405,6 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double Theta_Limit = M_PI / 2.0; // -- less than 90 degree -- //
 	vector< G4double > vec_Theta;
 	vec_Theta.push_back( 0.0 ); // -- first value: theta = eta = 0 -- //
-	G4double Theta_Max = 0;
 	for(G4int i=0; i<100; i++) // -- up to 100: arbitrary number -- //
 	{
 		cout << "Inclined angle(degree) for " << i << "th tower in r-z plane: " << vec_Theta[i]*(180.0/M_PI) << endl; 
