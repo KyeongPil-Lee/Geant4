@@ -423,7 +423,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	G4double length_Max = radius*std::tan( Theta_Max ) + CuLen_EtaDir / std::cos(Theta_Max);
 
 	cout << "nTower_EtaDir: " << nTower_EtaDir << endl;
-	cout << "Maximum inclined angle in barrel region: " << Theta_Max << " (eta = " << Eta_Max << ")" << endl;
+	cout << "Maximum inclined angle(degree) in barrel region: " << Theta_Max*(180.0/M_PI) << " (eta = " << Eta_Max << ")" << endl;
 	cout << "\tCorresponding maximum length: " << length_Max << endl;
 
 	// new G4LogicalSkinSurface("SkinSurf_PMTHouse", PMTHouseBox_Logic, OpSurf_PMTHouse);
@@ -432,9 +432,9 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- iteration for eta direction -- //
 	for(G4int i_barrel=-nTower_EtaDir-1; i_barrel<=nTower_EtaDir-1; i_barrel++) // -- nTower_EtaDir-1: # towers without the tower @ theta=0 -- //
 	{
-		// G4int i_cu=0;
+		G4int i_cu=0;
 		// -- iteration for phi direction -- //
-		for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
+		// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 		{
 			//////////////////
 			// -- Cu box -- //
