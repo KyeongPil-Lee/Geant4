@@ -463,6 +463,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 
 			G4Transform3D transform = G4Transform3D(rotM,Trans_Vector);
 			new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
+		}
 	}
 
 	// // -- iteration for phi direction -- //
