@@ -430,145 +430,218 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	new G4LogicalSkinSurface("SkinSurf_PMTPC", PMTPCBox_Logic, OpSurf_PMTPC);
 
 	// -- iteration for eta direction -- //
-	for(G4int i_barrel=-nTower_EtaDir-1; i_barrel<=nTower_EtaDir-1; i_barrel++) // -- nTower_EtaDir-1: # towers without the tower @ theta=0 -- //
-	{
-		G4int i_cu=0;
-		// -- iteration for phi direction -- //
-		// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
-		{
-			//////////////////
-			// -- Cu box -- //
-			//////////////////
-			G4double dTheta;
-			G4int I_factor; //correct error in sign of sin(dTheta)*tan(dTheta)
-			if (i_barrel<0) {
-				dTheta=-vec_Theta[-i_barrel];
-				I_factor=-1;
-			}
-			else {
-				dTheta=vec_Theta[i_barrel];
-				I_factor=1;
-			}
-
-			G4double phi = i_cu*dPhi;
-			//rotating matrix for Cu box
-			G4RotationMatrix rotM  = G4RotationMatrix();
-			rotM.rotateY(90*deg-dTheta);
-			rotM.rotateZ(phi);
-			//translational matrix for Cu box
-			G4double Phi_move=radius+0.5*CuLen_H*std::cos(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta);
-			G4double Eta_move=radius*std::tan(dTheta)+0.5*CuLen_H*std::sin(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
-			G4ThreeVector Trans_Vector = G4ThreeVector(Phi_move*std::cos(phi), Phi_move*std::sin(phi),Eta_move);
-
-			G4Transform3D transform = G4Transform3D(rotM,Trans_Vector);
-			new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
-		}
-	}
-
-	// // -- iteration for phi direction -- //
-	// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
+	// for(G4int i_barrel=-nTower_EtaDir-1; i_barrel<=nTower_EtaDir-1; i_barrel++) // -- nTower_EtaDir-1: # towers without the tower @ theta=0 -- //
 	// {
-	// 	//////////////////
-	// 	// -- Cu box -- //
-	// 	//////////////////
-	// 	G4double phi = i_cu*dPhi;
-	// 	G4RotationMatrix rotM  = G4RotationMatrix();
-	// 	rotM.rotateY(90*deg);
-	// 	rotM.rotateZ(phi);
+	// 	G4int i_cu=0;
+	// 	// -- iteration for phi direction -- //
+	// 	// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
+	// 	{
+	// 		//////////////////
+	// 		// -- Cu box -- //
+	// 		//////////////////
+	// 		G4double dTheta;
+	// 		G4int I_factor; //correct error in sign of sin(dTheta)*tan(dTheta)
+	// 		if (i_barrel<0) {
+	// 			dTheta=-vec_Theta[-i_barrel];
+	// 			I_factor=-1;
+	// 		}
+	// 		else {
+	// 			dTheta=vec_Theta[i_barrel];
+	// 			I_factor=1;
+	// 		}
 
-	// 	G4ThreeVector Unit_Z = G4ThreeVector(std::cos(phi),  std::sin(phi),0.);
-	// 	G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
-	// 	G4Transform3D transform = G4Transform3D(rotM,position);
+	// 		G4double phi = i_cu*dPhi;
+	// 		//rotating matrix for Cu box
+	// 		G4RotationMatrix rotM  = G4RotationMatrix();
+	// 		rotM.rotateY(90*deg-dTheta);
+	// 		rotM.rotateZ(phi);
+	// 		//translational matrix for Cu box
+	// 		G4double Phi_move=radius+0.5*CuLen_H*std::cos(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta);
+	// 		G4double Eta_move=radius*std::tan(dTheta)+0.5*CuLen_H*std::sin(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
+	// 		G4ThreeVector Trans_Vector = G4ThreeVector(Phi_move*std::cos(phi), Phi_move*std::sin(phi),Eta_move);
 
-	// 	new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
-
-	// 	// -- PMTs -- //
-	// 	// G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
-	// 	// G4Transform3D transform_PMTHouse = G4Transform3D(rotM,position_PMTHouse);
-	// 	// new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
-
-	// 	// new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
-	// 	// new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), this->PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
-
-	// 	// // -- fibers -- //
-	// 	// G4int i_total = 0;
-	// 	// for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
-	// 	// {
-	// 	// 	G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
-	// 	// 	for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
-	// 	// 	{
-	// 	// 		i_total++;
-	// 	// 		G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
-
-	// 	// 		// -- cladding: same shape for both C and S fiber -- //
-	// 	// 		G4VSolid* FiberClad_ith 
-	// 	// 		= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-
-	// 	// 		G4LogicalVolume *FiberClad_Logic_ith
-	// 	// 		= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
-
-	// 	// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
-
-	// 	// 		// -- Cores -- //
-	// 	// 		G4VSolid* FiberCore_ith;
-	// 	// 		G4LogicalVolume *FiberCore_Logic_ith;
-
-	// 	// 		// -- s, c, s, c, ... -- //
-	// 	// 		// -- c, s, c, s, ... -- //
-	// 	// 		bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
-	// 	// 		if( isFiberC )
-	// 	// 		{
-	// 	// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-	// 	// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
-	// 	// 		}
-	// 	// 		else
-	// 	// 		{
-	// 	// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-	// 	// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
-	// 	// 		}
-
-	// 	// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, i_total, checkOverlaps);
-
-	// 	// 		G4VisAttributes* visAttr = new G4VisAttributes();
-	// 	// 		if( isFiberC )
-	// 	// 			visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
-	// 	// 		else
-	// 	// 			visAttr->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
-	// 	// 		visAttr->SetForceSolid(true);
-	// 	// 		visAttr->SetVisibility(true);
-	// 	// 		FiberCore_Logic_ith->SetVisAttributes(visAttr);
-	// 	// 	}
-	// 	// }
-
-	// 	////////////////////////
-	// 	// -- Cu trapezoid -- //
-	// 	////////////////////////
-	// 	G4double Trd_phi = half_dPhi + i_cu*dPhi;
-	// 	// G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
-	// 	G4RotationMatrix Trd_rotM = G4RotationMatrix();
-	// 	Trd_rotM.rotateY(90*deg);
-	// 	Trd_rotM.rotateZ(Trd_phi);
-
-	// 	G4ThreeVector Trd_Unit_Z = G4ThreeVector(std::cos(Trd_phi),  std::sin(Trd_phi),0.);
-	// 	G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
-	// 	G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
-
-	// 	new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
-
-
-
-
-	// 	// G4ThreeVector origin(x,y,z);
-	// 	// G4RotationMatrix* RotMatrix = new G4RotationMatrix();
-
-	// 	// RotMatrix->rotateZ(90*deg);
-	// 	// RotMatrix->rotateZ(-i*theta_unit_ZRot);
-	// 	// RotMatrix->rotateX(90*deg);
-	// 	// RotMatrix->rotateX(-theta_unit*(copyNo+0.5));
-
-	// 	// -- place it -- //
-	// 	// new G4PVPlacement( RotMatrix, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
+	// 		G4Transform3D transform = G4Transform3D(rotM,Trans_Vector);
+	// 		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps );
+	// 	}
 	// }
+
+	// -- iteration for phi direction -- //
+	i_cu = 0 // -- to test without phi rotation -- //
+	// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
+	{
+		//////////////////
+		// -- Cu box -- //
+		//////////////////
+		G4double phi = i_cu*dPhi;
+		G4RotationMatrix rotM  = G4RotationMatrix();
+		rotM.rotateY(90*deg);
+		rotM.rotateZ(phi);
+
+		G4ThreeVector Unit_Z = G4ThreeVector(std::cos(phi),  std::sin(phi),0.);
+		G4ThreeVector position = (radius + 0.5*CuLen_H)*Unit_Z; // -- multiply the size of the vector -- //
+		G4Transform3D transform = G4Transform3D(rotM,position);
+
+		new G4PVPlacement(transform, CuLogical, "CuPhysical", worldLogical, false, i_cu, checkOverlaps ); 
+
+		-- PMTs -- //
+		G4ThreeVector position_PMTHouse = (radius + CuLen_H + 0.5*PMTHouseLen_H)*Unit_Z;
+		G4Transform3D transform_PMTHouse = G4Transform3D(rotM,position_PMTHouse);
+		new G4PVPlacement(transform_PMTHouse, PMTHouseBox_Logic, "PMTHouseBox_Phys", worldLogical, false, i_cu, checkOverlaps );
+
+		new G4PVPlacement(0, G4ThreeVector(0, 0, -0.5*PMTHouseLen_H + 0.5*PMTGlassLen_H), PMTGlassBox_Logic, "PMTGlassBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+		new G4PVPlacement(0, G4ThreeVector(0, 0, 0.5*PMTHouseLen_H - 0.5*PMTPCLen_H), this->PMTPCBox_Logic, "PMTPCBox_Phys", PMTHouseBox_Logic, false, i_cu, checkOverlaps );
+
+		// -- fibers -- //
+		G4int i_total = 0;
+		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
+		{
+			G4double x_EtaDir = ((-1)*CuLen_EtaDir / 2.0) + dist_edge_EtaDir + dist_btwCore*i_EtaDir;
+			for(G4int i_PhiDir=0; i_PhiDir<nFiber_PhiDir; i_PhiDir++)
+			{
+				i_total++;
+				G4double x_PhiDir = ((-1)*CuLen_PhiDir / 2.0) + dist_edge_PhiDir + dist_btwCore*i_PhiDir;
+
+				// -- cladding: same shape for both C and S fiber -- //
+				G4VSolid* FiberClad_ith 
+				= new G4IntersectionSolid("fiberClad", CuBox, fiberClad, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+
+				G4LogicalVolume *FiberClad_Logic_ith
+				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
+
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuLogical, false, i_total, checkOverlaps);
+
+				// -- Cores -- //
+				G4VSolid* FiberCore_ith;
+				G4LogicalVolume *FiberCore_Logic_ith;
+
+				// -- s, c, s, c, ... -- //
+				// -- c, s, c, s, ... -- //
+				bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
+				if( isFiberC )
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreC, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
+				}
+				else
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuBox, fiberCoreS, 0, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
+				}
+
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, i_total, checkOverlaps);
+
+				G4VisAttributes* visAttr = new G4VisAttributes();
+				if( isFiberC )
+					visAttr->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+				else
+					visAttr->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
+				visAttr->SetForceSolid(true);
+				visAttr->SetVisibility(true);
+				FiberCore_Logic_ith->SetVisAttributes(visAttr);
+			}
+		}
+
+		////////////////////////
+		// -- Cu trapezoid -- //
+		////////////////////////
+		G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		// G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
+		G4RotationMatrix Trd_rotM = G4RotationMatrix();
+		Trd_rotM.rotateY(90*deg-dEta);
+		Trd_rotM.rotateZ(Trd_phi);
+		
+		//this codes making overlap... need to be corrected
+		G4double move_tri=radius/std::cos(half_dPhi) + 0.5*CuLen_H*std::cos(dEta)+0.5*CuLen_EtaDir*std::sin(dEta);
+		G4double tri_z_move=radius*std::tan(dEta)/std::cos(half_dPhi)+0.5*CuLen_H*std::sin(dEta)+0.5*CuLen_EtaDir*std::sin(dEta)*tan(dEta);
+		G4ThreeVector Trd_Unit_Z = G4ThreeVector(move_tri*std::cos(Trd_phi), move_tri*std::sin(Trd_phi),tri_z_move);
+		//G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_Unit_Z);
+		
+		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+
+		// -- tri_fibers -- //
+		G4int tri_i_total = 0;
+		G4RotationMatrix *Trdfi_rotM = new G4RotationMatrix();
+		Trdfi_rotM->rotateX(-half_dPhi);
+		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
+		{
+			G4double x_EtaDir = ((-1)*CuTrdLen_EtaDir / 2.0) + tri_dist_edge_EtaDir + dist_btwCore*i_EtaDir;
+			for(G4int i_PhiDir=0; i_PhiDir<tri_nFiber_PhiDir; i_PhiDir++)
+			{
+				tri_i_total++;
+				G4double x_PhiDir =((-1)*CuTrdLen_PhiDir / 4.0) + tri_dist_edge_PhiDir/std::cos(half_dPhi) + dist_btwCore*i_PhiDir/std::cos(half_dPhi);
+				
+				// -- cladding: same shape for both C and S fiber -- //
+				G4VSolid* FiberClad_ith
+				= new G4IntersectionSolid("fiberClad", CuTrd, fiberClad, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+				
+				G4LogicalVolume *FiberClad_Logic_ith
+				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
+				
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuTrdLogical, false, tri_i_total, checkOverlaps);
+				
+				// -- Cores -- //
+				G4VSolid* FiberCore_ith;
+				G4LogicalVolume *FiberCore_Logic_ith;
+				
+				// -- s, c, s, c, ... -- //
+				// -- c, s, c, s, ... -- //
+				bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
+
+				if( isFiberC )
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreC, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
+				}
+				else
+				{
+					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreS, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
+				}
+				
+				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, tri_i_total, checkOverlaps);
+				
+				G4VisAttributes* visAttr1 = new G4VisAttributes();
+				if( isFiberC )
+					visAttr1->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+				else
+					visAttr1->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
+				visAttr1->SetForceSolid(true);
+				visAttr1->SetVisibility(true);
+				FiberCore_Logic_ith->SetVisAttributes(visAttr1);
+			}
+
+		}
+
+		// ////////////////////////
+		// // -- Cu trapezoid -- //
+		// ////////////////////////
+		// G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		// // G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
+		// G4RotationMatrix Trd_rotM = G4RotationMatrix();
+		// Trd_rotM.rotateY(90*deg);
+		// Trd_rotM.rotateZ(Trd_phi);
+
+		// G4ThreeVector Trd_Unit_Z = G4ThreeVector(std::cos(Trd_phi),  std::sin(Trd_phi),0.);
+		// G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		// G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_position);
+
+		// new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+
+
+
+
+		// G4ThreeVector origin(x,y,z);
+		// G4RotationMatrix* RotMatrix = new G4RotationMatrix();
+
+		// RotMatrix->rotateZ(90*deg);
+		// RotMatrix->rotateZ(-i*theta_unit_ZRot);
+		// RotMatrix->rotateX(90*deg);
+		// RotMatrix->rotateX(-theta_unit*(copyNo+0.5));
+
+		// -- place it -- //
+		// new G4PVPlacement( RotMatrix, G4ThreeVector(), CuLogical, "CuPhysical", worldLogical, false, 0, checkOverlaps );
+	}
 
 	// -- visualization -- //
 	G4VisAttributes* visAttr;
