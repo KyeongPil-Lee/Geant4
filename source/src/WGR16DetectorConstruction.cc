@@ -470,6 +470,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 	for(G4int i_cu=0; i_cu<0; i_cu++)
 	{
+		G4int i_barrel = 0; // for a test -- //
 		//////////////////
 		// -- Cu box -- //
 		//////////////////
@@ -483,7 +484,7 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 			dTheta=vec_Theta[i_barrel];
 			I_factor=1;
 		}
-		
+
 		G4double phi = i_cu*dPhi;
 		G4RotationMatrix rotM  = G4RotationMatrix();
 		rotM.rotateY(90*deg);
