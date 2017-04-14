@@ -554,77 +554,77 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 			}
 		}
 
-		////////////////////////
-		// -- Cu trapezoid -- //
-		////////////////////////
-		G4double Trd_phi = half_dPhi + i_cu*dPhi;
-		// G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
-		G4RotationMatrix Trd_rotM = G4RotationMatrix();
-		Trd_rotM.rotateY(90*deg-dTheta);
-		Trd_rotM.rotateZ(Trd_phi);
+		// ////////////////////////
+		// // -- Cu trapezoid -- //
+		// ////////////////////////
+		// G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		// // G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
+		// G4RotationMatrix Trd_rotM = G4RotationMatrix();
+		// Trd_rotM.rotateY(90*deg-dTheta);
+		// Trd_rotM.rotateZ(Trd_phi);
 		
-		//this codes making overlap... need to be corrected
-		G4double move_tri=radius/std::cos(half_dPhi) + 0.5*CuLen_H*std::cos(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta);
-		G4double tri_z_move=radius*std::tan(dTheta)/std::cos(half_dPhi)+0.5*CuLen_H*std::sin(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
-		G4ThreeVector Trd_Unit_Z = G4ThreeVector(move_tri*std::cos(Trd_phi), move_tri*std::sin(Trd_phi),tri_z_move);
-		//G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
-		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_Unit_Z);
+		// //this codes making overlap... need to be corrected
+		// G4double move_tri=radius/std::cos(half_dPhi) + 0.5*CuLen_H*std::cos(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta);
+		// G4double tri_z_move=radius*std::tan(dTheta)/std::cos(half_dPhi)+0.5*CuLen_H*std::sin(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
+		// G4ThreeVector Trd_Unit_Z = G4ThreeVector(move_tri*std::cos(Trd_phi), move_tri*std::sin(Trd_phi),tri_z_move);
+		// //G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		// G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_Unit_Z);
 		
-		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+		// new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
 
-		// -- tri_fibers -- //
-		G4int tri_i_total = 0;
-		G4RotationMatrix *Trdfi_rotM = new G4RotationMatrix();
-		Trdfi_rotM->rotateX(-half_dPhi);
-		for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
-		{
-			G4double x_EtaDir = ((-1)*CuTrdLen_EtaDir / 2.0) + tri_dist_edge_EtaDir + dist_btwCore*i_EtaDir;
-			for(G4int i_PhiDir=0; i_PhiDir<tri_nFiber_PhiDir; i_PhiDir++)
-			{
-				tri_i_total++;
-				G4double x_PhiDir =((-1)*CuTrdLen_PhiDir / 4.0) + tri_dist_edge_PhiDir/std::cos(half_dPhi) + dist_btwCore*i_PhiDir/std::cos(half_dPhi);
+		// // -- tri_fibers -- //
+		// G4int tri_i_total = 0;
+		// G4RotationMatrix *Trdfi_rotM = new G4RotationMatrix();
+		// Trdfi_rotM->rotateX(-half_dPhi);
+		// for(G4int i_EtaDir=0; i_EtaDir<nFiber_EtaDir; i_EtaDir++)
+		// {
+		// 	G4double x_EtaDir = ((-1)*CuTrdLen_EtaDir / 2.0) + tri_dist_edge_EtaDir + dist_btwCore*i_EtaDir;
+		// 	for(G4int i_PhiDir=0; i_PhiDir<tri_nFiber_PhiDir; i_PhiDir++)
+		// 	{
+		// 		tri_i_total++;
+		// 		G4double x_PhiDir =((-1)*CuTrdLen_PhiDir / 4.0) + tri_dist_edge_PhiDir/std::cos(half_dPhi) + dist_btwCore*i_PhiDir/std::cos(half_dPhi);
 				
-				// -- cladding: same shape for both C and S fiber -- //
-				G4VSolid* FiberClad_ith
-				= new G4IntersectionSolid("fiberClad", CuTrd, fiberClad, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 		// -- cladding: same shape for both C and S fiber -- //
+		// 		G4VSolid* FiberClad_ith
+		// 		= new G4IntersectionSolid("fiberClad", CuTrd, fiberClad, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
 				
-				G4LogicalVolume *FiberClad_Logic_ith
-				= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
+		// 		G4LogicalVolume *FiberClad_Logic_ith
+		// 		= new G4LogicalVolume(FiberClad_ith, clad_C_Material, "FiberClad_Logic");
 				
-				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuTrdLogical, false, tri_i_total, checkOverlaps);
+		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberClad_Logic_ith, "FiberClad_Phys", CuTrdLogical, false, tri_i_total, checkOverlaps);
 				
-				// -- Cores -- //
-				G4VSolid* FiberCore_ith;
-				G4LogicalVolume *FiberCore_Logic_ith;
+		// 		// -- Cores -- //
+		// 		G4VSolid* FiberCore_ith;
+		// 		G4LogicalVolume *FiberCore_Logic_ith;
 				
-				// -- s, c, s, c, ... -- //
-				// -- c, s, c, s, ... -- //
-				bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
+		// 		// -- s, c, s, c, ... -- //
+		// 		// -- c, s, c, s, ... -- //
+		// 		bool isFiberC = this->IsFiberC(i_EtaDir, i_PhiDir);
 
-				if( isFiberC )
-				{
-					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreC, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
-				}
-				else
-				{
-					FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreS, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
-					FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
-				}
+		// 		if( isFiberC )
+		// 		{
+		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreC, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_C_Material, "FiberCore_Logic");
+		// 		}
+		// 		else
+		// 		{
+		// 			FiberCore_ith = new G4IntersectionSolid( "fiberCore", CuTrd, fiberCoreS, Trdfi_rotM, G4ThreeVector(x_EtaDir, x_PhiDir, 0));
+		// 			FiberCore_Logic_ith = new G4LogicalVolume(FiberCore_ith, core_S_Material, "FiberCore_Logic");
+		// 		}
 				
-				new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, tri_i_total, checkOverlaps);
+		// 		new G4PVPlacement(0, G4ThreeVector(0,0,0), FiberCore_Logic_ith, "FiberCore_Phys", FiberClad_Logic_ith, false, tri_i_total, checkOverlaps);
 				
-				G4VisAttributes* visAttr1 = new G4VisAttributes();
-				if( isFiberC )
-					visAttr1->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
-				else
-					visAttr1->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
-				visAttr1->SetForceSolid(true);
-				visAttr1->SetVisibility(true);
-				FiberCore_Logic_ith->SetVisAttributes(visAttr1);
-			}
+		// 		G4VisAttributes* visAttr1 = new G4VisAttributes();
+		// 		if( isFiberC )
+		// 			visAttr1->SetColour( G4Colour(0.0,0.0,1.0) ); // -- blue -- //
+		// 		else
+		// 			visAttr1->SetColour( G4Colour(1.0,1.0,0.0) );  // -- yellow -- //
+		// 		visAttr1->SetForceSolid(true);
+		// 		visAttr1->SetVisibility(true);
+		// 		FiberCore_Logic_ith->SetVisAttributes(visAttr1);
+		// 	}
 
-		}
+		// }
 
 		// ////////////////////////
 		// // -- Cu trapezoid -- //
