@@ -554,23 +554,23 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 			}
 		}
 
-		// ////////////////////////
-		// // -- Cu trapezoid -- //
-		// ////////////////////////
-		// G4double Trd_phi = half_dPhi + i_cu*dPhi;
-		// // G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
-		// G4RotationMatrix Trd_rotM = G4RotationMatrix();
-		// Trd_rotM.rotateY(90*deg-dTheta);
-		// Trd_rotM.rotateZ(Trd_phi);
+		////////////////////////
+		// -- Cu trapezoid -- //
+		////////////////////////
+		G4double Trd_phi = half_dPhi + i_cu*dPhi;
+		// G4double Trd_phi = half_dPhi + i_cu*dPhi + dPhi;
+		G4RotationMatrix Trd_rotM = G4RotationMatrix();
+		Trd_rotM.rotateY(90*deg-dTheta);
+		Trd_rotM.rotateZ(Trd_phi);
 		
-		// //this codes making overlap... need to be corrected
-		// G4double move_tri=radius/std::cos(half_dPhi) + 0.5*CuLen_H*std::cos(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta);
-		// G4double tri_z_move=radius*std::tan(dTheta)/std::cos(half_dPhi)+0.5*CuLen_H*std::sin(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
-		// G4ThreeVector Trd_Unit_Z = G4ThreeVector(move_tri*std::cos(Trd_phi), move_tri*std::sin(Trd_phi),tri_z_move);
-		// //G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
-		// G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_Unit_Z);
+		//this codes making overlap... need to be corrected
+		G4double move_tri=radius/std::cos(half_dPhi) + 0.5*CuLen_H*std::cos(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta);
+		G4double tri_z_move=radius*std::tan(dTheta)/std::cos(half_dPhi)+0.5*CuLen_H*std::sin(dTheta)+0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
+		G4ThreeVector Trd_Unit_Z = G4ThreeVector(move_tri*std::cos(Trd_phi), move_tri*std::sin(Trd_phi),tri_z_move);
+		//G4ThreeVector Trd_position = (radius/std::cos(half_dPhi) + 0.5*CuTrdLen_H)*Trd_Unit_Z; // -- multiply the size of the vector -- //
+		G4Transform3D Trd_transform = G4Transform3D(Trd_rotM,Trd_Unit_Z);
 		
-		// new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
+		new G4PVPlacement(Trd_transform, CuTrdLogical, "CuTrdPhysical", worldLogical, false, i_cu, checkOverlaps );
 
 		// // -- tri_fibers -- //
 		// G4int tri_i_total = 0;
