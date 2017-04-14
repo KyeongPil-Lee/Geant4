@@ -433,32 +433,32 @@ G4VPhysicalVolume* WGR16DetectorConstruction::Construct()
 	// -- iteration for eta direction -- //
 	for(G4int i_barrel=-nTower_EtaDir-1; i_barrel<=nTower_EtaDir-1; i_barrel++) // -- nTower_EtaDir-1: # towers without the tower @ theta=0 -- //
 	{
-		G4int i_cu=0;
+		// G4int i_cu=0;
 		// -- iteration for phi direction -- //
 		for(G4int i_cu=0; i_cu<nTower_PhiDir; i_cu++)
 		{
 			//////////////////
 			// -- Cu box -- //
 			//////////////////
-			G4double dEta;
-			G4int I_factor; //correct error in sign of sin(dEta)*tan(dEta)
+			G4double dTheta;
+			G4int I_factor; //correct error in sign of sin(dTheta)*tan(dTheta)
 			if (i_barrel<0) {
-				dEta=-Eta[-i_barrel];
+				dTheta=-vec_Theta[-i_barrel];
 				I_factor=-1;
 			}
 			else {
-				dEta=Eta[i_barrel];
+				dTheta=vec_Theta[i_barrel];
 				I_factor=1;
 			}
 
 			G4double phi = i_cu*dPhi;
 			//rotating matrix for Cu box
 			G4RotationMatrix rotM  = G4RotationMatrix();
-			rotM.rotateY(90*deg-dEta);
+			rotM.rotateY(90*deg-dTheta);
 			rotM.rotateZ(phi);
 			//translational matrix for Cu box
-			G4double Phi_move=radius+0.5*CuLen_H*std::cos(dEta)+I_factor*0.5*CuLen_EtaDir*std::sin(dEta);
-			G4double Eta_move=radius*std::tan(dEta)+0.5*CuLen_H*std::sin(dEta)+I_factor*0.5*CuLen_EtaDir*std::sin(dEta)*tan(dEta);
+			G4double Phi_move=radius+0.5*CuLen_H*std::cos(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta);
+			G4double Eta_move=radius*std::tan(dTheta)+0.5*CuLen_H*std::sin(dTheta)+I_factor*0.5*CuLen_EtaDir*std::sin(dTheta)*tan(dTheta);
 			G4ThreeVector Trans_Vector = G4ThreeVector(Phi_move*std::cos(phi), Phi_move*std::sin(phi),Eta_move);
 
 			G4Transform3D transform = G4Transform3D(rotM,Trans_Vector);
